@@ -789,7 +789,7 @@ std::string MainProgram::print_coord(Coord coord, std::ostream& output, bool nl)
 }
 
 string const townidx = "([a-zA-Z0-9]+)";
-string const namex = "'([a-zA-Z0-9 -]+)'";
+string const namex = "([a-zA-Z0-9-]+)";
 string const numx = "([0-9]+)";
 string const optcoordx = "\\([[:space:]]*[0-9]+[[:space:]]*,[[:space:]]*[0-9]+[[:space:]]*\\)";
 string const coordx = "\\([[:space:]]*([0-9]+)[[:space:]]*,[[:space:]]*([0-9]+)[[:space:]]*\\)";
@@ -844,6 +844,9 @@ MainProgram::CmdResult MainProgram::cmd_perftest(std::ostream& output, MatchIter
 #ifdef _GLIBCXX_DEBUG
     output << "WARNING: Debug STL enabled, performance will be worse than expected (maybe also asymptotically)!" << endl;
 #endif // _GLIBCXX_DEBUG
+
+    try {
+    // Note: everything below is indented too little by one indentation level! (because of try block above)
 
     vector<string> optional_cmds({"remove_town", "towns_nearest", "longest_vassal_path", "total_net_tax"});
     vector<string> nondefault_cmds({"remove_town", "find_towns"});
@@ -1089,6 +1092,15 @@ MainProgram::CmdResult MainProgram::cmd_perftest(std::ostream& output, MatchIter
 
     ds_.clear_all();
     init_primes();
+
+    }
+    catch (NotImplemented const&)
+    {
+        // Clean up after NotImplemented
+        ds_.clear_all();
+        init_primes();
+        throw;
+    }
 
 #ifdef _GLIBCXX_DEBUG
     output << "WARNING: Debug STL enabled, performance will be worse than expected (maybe also asymptotically)!" << endl;
