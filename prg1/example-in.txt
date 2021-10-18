@@ -1,0 +1,19 @@
+clear_all
+town_count
+read "example-data.txt"
+town_count
+towns_alphabetically
+mindist 
+maxdist 
+towns_distance_increasing
+find_towns Kuopio
+change_town_name Tpe Manse
+town_vassals Hki
+taxer_path Tpe
+longest_vassal_path Hki
+total_net_tax Tku
+total_net_tax Ol
+total_net_tax Kuo
+total_net_tax Hki
+remove_town Kuo
+town_vassals Hki

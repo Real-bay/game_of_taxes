@@ -1,0 +1,10 @@
+# Adding towns
+add_town Hki Helsinki (3,0) 1000
+add_town Tpe Tampere (2,2) 500
+add_town Ol Oulu (3,5) 400
+add_town Kuo Kuopio (6,3) 300
+add_town Tku Turku (1,1) 30
+# Adding vassalships
+add_vassalship Ol Kuo
+add_vassalship Kuo Hki
+add_vassalship Tpe Hki
