@@ -1,8 +1,8 @@
 // Datastructures.hh
 //
-// Student name:
-// Student email:
-// Student number:
+// Student name: Matias Aitolahti
+// Student email: matias.aitolahti@tuni.fi
+// Student number: H293115
 
 #ifndef DATASTRUCTURES_HH
 #define DATASTRUCTURES_HH
