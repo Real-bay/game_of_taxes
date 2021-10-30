@@ -179,6 +179,14 @@ public:
 
 private:
     // Add stuff needed for your class implementation here
+    struct town_data {
+        TownID town_id;
+        Name name;
+        Coord coord;
+        int tax;
+    } ;
+
+    std::unordered_map<TownID, town_data> all_town_data_;
 
 };
 
