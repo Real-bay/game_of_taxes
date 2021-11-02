@@ -10,7 +10,7 @@ find_towns Kuopio
 change_town_name Tpe Manse
 town_vassals Hki
 taxer_path Tpe
-towns_nearest (2,0)
+towns_nearest (7,5)
 longest_vassal_path Hki
 total_net_tax Tku
 total_net_tax Ol

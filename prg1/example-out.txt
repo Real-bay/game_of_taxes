@@ -52,12 +52,12 @@ Manse: tax=500, pos=(2,2), id=Tpe
 > taxer_path Tpe
 1. Manse
 2. Helsinki
-> towns_nearest (2,0)
-1. Helsinki: tax=1000, pos=(3,0), id=Hki
-2. Turku: tax=30, pos=(1,1), id=Tku
+> towns_nearest (7,5)
+1. Kuopio: tax=300, pos=(6,3), id=Kuo
+2. Oulu: tax=400, pos=(3,5), id=Ol
 3. Manse: tax=500, pos=(2,2), id=Tpe
-4. Kuopio: tax=300, pos=(6,3), id=Kuo
-5. Oulu: tax=400, pos=(3,5), id=Ol
+4. Helsinki: tax=1000, pos=(3,0), id=Hki
+5. Turku: tax=30, pos=(1,1), id=Tku
 > longest_vassal_path Hki
 1. Helsinki
 2. Kuopio

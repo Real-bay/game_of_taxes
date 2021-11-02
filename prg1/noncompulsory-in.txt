@@ -21,7 +21,7 @@ towns_distance_increasing
 remove_town xxxx
 # Test towns_nearest
 find_towns Tampere
-towns_nearest (0,5)
+towns_nearest (185,200)
 longest_vassal_path Lr
 longest_vassal_path Tpe
 longest_vassal_path Rma
