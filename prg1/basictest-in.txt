@@ -1,0 +1,34 @@
+clear_all
+town_count
+# Read in example data
+read "example-data.txt" silent
+# Do some basic tests
+town_count
+towns_alphabetically 
+mindist 
+maxdist 
+towns_distance_increasing
+find_towns Tampere
+find_towns Turku
+# Add towns and try again
+add_town Tku Turku (0,0) 10
+add_town Roi Rovaniemi (5,7) 20
+town_count
+towns_alphabetically 
+mindist 
+maxdist 
+towns_distance_increasing
+find_towns Tampere
+find_towns Turku
+town_vassals Hki
+town_vassals Kuo
+town_vassals Tpe
+town_vassals Tku
+taxer_path Ol
+taxer_path Kuo
+taxer_path Hki
+taxer_path Tku
+change_town_name Tku Tampere
+find_towns Tampere
+town_count
+quit

@@ -1,0 +1,25 @@
+# Add towns
+add_town Slo Salo (3,3) 53188
+add_town Ktn Kaustinen (4,10) 4302
+add_town Sla Salla (9,16) 3600
+add_town Hmi Hyrynsalmi (8,12) 2341
+add_town Nnl Naantali (2,2) 19124
+add_town Kli Kolari (4,16) 3797
+add_town Roi Rovaniemi (6,15) 62037
+add_town Lai Laihia (3,8) 8098
+add_town Keu Keuruu (5,6) 9953
+add_town Ilm Iisalmi (7,9) 21675
+add_town Rma Rauma (2,4) 39612
+add_town Hki Helsinki (5,2) 642045
+add_town Smo Sotkamo (8,10) 10452
+add_town Iri Inari (8,19) 6830
+add_town Par Parikkala (9,5) 5030
+add_town Lr Lappeenranta (8,5) 72685
+add_town Hma Hamina (7,3) 20554
+add_town Pmi Pelkosenniemi (7,16) 949
+add_town Mka Maaninka (7,8) 3748
+add_town Uki Utsjoki (7,21) 1247
+add_town Kmo Kuusamo (9,13) 15391
+add_town Mhn Maarianhamina (0,1) 11658
+add_town Tpe Tampere (4,4) 230537
+add_town Hto Hailuoto (5,12) 981
