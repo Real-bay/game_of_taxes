@@ -421,6 +421,7 @@ MainProgram::CmdResult MainProgram::cmd_all_towns(ostream& output, MatchIter beg
         output << "No towns!" << endl;
     }
 
+    std::sort(towns.begin(), towns.end());
     return {ResultType::LIST, towns};
 }
 
