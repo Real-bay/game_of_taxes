@@ -11,3 +11,4 @@
 - biggertest-in/out.txt: A bigger test testing compulsory operations with town data from towns-data.txt an towns-vassals-data.txt
 - noncompulsory-in/out.txt: A bigger test testing non-compulsory operations with town data from towns-data.txt an towns-vassals-data.txt
 - example-in/out.txt: The assignment specification's example run
+- perftest-*.txt: These tests test the performance of various operations with growing number of towns, using the main program perftest command

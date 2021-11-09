@@ -168,6 +168,15 @@ MainProgram::CmdResult MainProgram::cmd_print_town(std::ostream& /*output*/, Mat
     return {ResultType::LIST, {id}};
 }
 
+void MainProgram::test_print_town()
+{
+    if (random_towns_added_ > 0) // Don't do anything if there's no towns
+    {
+        auto id = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
+        test_get_functions(id);
+    }
+}
+
 MainProgram::CmdResult MainProgram::cmd_change_town_name(std::ostream& /*output*/, MainProgram::MatchIter begin, MainProgram::MatchIter end)
 {
     TownID id = *begin++;
@@ -187,7 +196,6 @@ void MainProgram::test_change_town_name()
         auto id = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
         auto newname = n_to_name(random<decltype(random_towns_added_)>(0, random_towns_added_));
         ds_.change_town_name(id, newname);
-        test_get_functions(id);
     }
 }
 
@@ -229,7 +237,6 @@ void MainProgram::test_taxer_path()
     {
         auto id = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
         ds_.taxer_path(id);
-        test_get_functions(id);
     }
 }
 
@@ -249,7 +256,6 @@ void MainProgram::test_longest_vassal_path()
     {
         auto id = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
         ds_.longest_vassal_path(id);
-        test_get_functions(id);
     }
 }
 
@@ -271,7 +277,6 @@ void MainProgram::test_total_net_tax()
     {
         auto id = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
         ds_.total_net_tax(id);
-        test_get_functions(id);
     }
 }
 
@@ -338,8 +343,8 @@ void MainProgram::add_random_towns(unsigned int size, Coord min, Coord max)
 
         ds_.add_town(id, name, {x, y}, tax);
 
-        // Add random taxer whose number is smaller, with 80 % probability
-        if (random_towns_added_ > 0 && random(0, 100) < 80)
+        // Add random taxer whose number is smaller
+        if (random_towns_added_ > 0)
         {
             TownID taxerid = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
             ds_.add_vassalship(id, taxerid);
@@ -452,7 +457,6 @@ void MainProgram::test_town_vassals()
     {
         auto id = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
         ds_.get_town_vassals(id);
-        test_get_functions(id);
     }
 }
 
@@ -801,6 +805,7 @@ vector<MainProgram::CmdInfo> MainProgram::cmds_ =
     {"add_town", "ID Name (x,y) tax", townidx+wsx+namex+wsx+coordx+wsx+numx, &MainProgram::cmd_add_town, nullptr },
     {"random_add", "number_of_towns_to_add  (minx,miny) (maxx,maxy) (coordinates optional)",
      numx+"(?:"+wsx+coordx+wsx+coordx+")?", &MainProgram::cmd_random_add, &MainProgram::test_random_add },
+    {"print_town", "TownID", townidx, &MainProgram::cmd_print_town, &MainProgram::test_print_town },
     {"all_towns", "", "", &MainProgram::cmd_all_towns, &MainProgram::test_all_towns },
     {"town_count", "", "", &MainProgram::cmd_town_count, nullptr },
     {"clear_all", "", "", &MainProgram::cmd_clear_all, nullptr },
