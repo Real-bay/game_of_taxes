@@ -1,0 +1,89 @@
+> clear_all
+Cleared all towns
+> town_count
+Number of towns: 0
+> # Read in example data
+> read "example-data.txt" silent
+** Commands from 'example-data.txt'
+...(output discarded in silent mode)...
+** End of commands from 'example-data.txt'
+> # Do some basic tests
+> town_count
+Number of towns: 5
+> towns_alphabetically 
+1. Helsinki: tax=1000, pos=(3,0), id=Hki
+2. Kuopio: tax=300, pos=(6,3), id=Kuo
+3. Oulu: tax=400, pos=(3,5), id=Ol
+4. Tampere: tax=500, pos=(2,2), id=Tpe
+5. Turku: tax=30, pos=(1,1), id=Tku
+> mindist 
+Turku: tax=30, pos=(1,1), id=Tku
+> maxdist 
+Kuopio: tax=300, pos=(6,3), id=Kuo
+> towns_distance_increasing
+1. Turku: tax=30, pos=(1,1), id=Tku
+2. Tampere: tax=500, pos=(2,2), id=Tpe
+3. Helsinki: tax=1000, pos=(3,0), id=Hki
+4. Oulu: tax=400, pos=(3,5), id=Ol
+5. Kuopio: tax=300, pos=(6,3), id=Kuo
+> find_towns Tampere
+Tampere: tax=500, pos=(2,2), id=Tpe
+> find_towns Turku
+Turku: tax=30, pos=(1,1), id=Tku
+> # Add towns and try again
+> add_town Tku Turku (0,0) 10
+Failed (NO_... returned)!!
+> add_town Roi Rovaniemi (5,7) 20
+Rovaniemi: tax=20, pos=(5,7), id=Roi
+> town_count
+Number of towns: 6
+> towns_alphabetically 
+1. Helsinki: tax=1000, pos=(3,0), id=Hki
+2. Kuopio: tax=300, pos=(6,3), id=Kuo
+3. Oulu: tax=400, pos=(3,5), id=Ol
+4. Rovaniemi: tax=20, pos=(5,7), id=Roi
+5. Tampere: tax=500, pos=(2,2), id=Tpe
+6. Turku: tax=30, pos=(1,1), id=Tku
+> mindist 
+Turku: tax=30, pos=(1,1), id=Tku
+> maxdist 
+Rovaniemi: tax=20, pos=(5,7), id=Roi
+> towns_distance_increasing
+1. Turku: tax=30, pos=(1,1), id=Tku
+2. Tampere: tax=500, pos=(2,2), id=Tpe
+3. Helsinki: tax=1000, pos=(3,0), id=Hki
+4. Oulu: tax=400, pos=(3,5), id=Ol
+5. Kuopio: tax=300, pos=(6,3), id=Kuo
+6. Rovaniemi: tax=20, pos=(5,7), id=Roi
+> find_towns Tampere
+Tampere: tax=500, pos=(2,2), id=Tpe
+> find_towns Turku
+Turku: tax=30, pos=(1,1), id=Tku
+> town_vassals Hki
+1. Kuopio: tax=300, pos=(6,3), id=Kuo
+2. Tampere: tax=500, pos=(2,2), id=Tpe
+> town_vassals Kuo
+Oulu: tax=400, pos=(3,5), id=Ol
+> town_vassals Tpe
+No towns!
+> town_vassals Tku
+No towns!
+> taxer_path Ol
+1. Oulu
+2. Kuopio
+3. Helsinki
+> taxer_path Kuo
+1. Kuopio
+2. Helsinki
+> taxer_path Hki
+Helsinki
+> taxer_path Tku
+Turku
+> change_town_name Tku Tampere
+Tampere: tax=30, pos=(1,1), id=Tku
+> find_towns Tampere
+1. Tampere: tax=30, pos=(1,1), id=Tku
+2. Tampere: tax=500, pos=(2,2), id=Tpe
+> town_count
+Number of towns: 6
+> quit

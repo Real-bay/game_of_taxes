@@ -1,0 +1,27 @@
+# raakile/skeleton tests
+clear_all
+town_count
+all_towns
+add_town x1 First (1,1) 11
+all_towns
+town_count
+clear_all
+add_town x1 First (1,1) 11
+town_count
+add_town x2 Second (2,2) 22
+town_count
+add_town x3 Third (3,3) 33
+town_count
+all_towns
+add_vassalship x1 x3
+all_towns
+town_vassals x1
+town_vassals x3
+town_vassals x99
+add_vassalship x2 x3
+all_towns
+town_vassals x1
+town_vassals x3
+town_vassals x99
+clear_all
+all_towns

@@ -141,8 +141,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::update_view()
 {
-    bool errors = false;
-    std::ostringstream errorout;
+    std::unordered_set<std::string> errorset;
     try
     {
         gscene_->clear();
@@ -157,173 +156,186 @@ void MainWindow::update_view()
                       [&result_towns, &i](auto id){ result_towns[id] += MainProgram::convert_to_string(++i)+". "; });
 
         auto towns = mainprg_.ds_.all_towns();
-        if (/* !errors && */ towns.size() == 1 && towns.front() == NO_TOWNID)
+        if (towns.size() == 1 && towns.front() == NO_TOWNID)
         {
-            errorout << "Error from GUI: all_towns() returned error {NO_TOWNID}" << std::endl;
-            errors = true;
+            errorset.insert("all_towns() returned error {NO_TOWNID}");
         }
 
         for (auto& townid : towns)
         {
+            auto res_place = std::find(prev_result.begin(), prev_result.end(), townid);
+
             QColor towncolor = Qt::white;
             QColor namecolor = Qt::cyan;
             QColor townborder = Qt::white;
             int townzvalue = 1;
 
-            auto xy = mainprg_.ds_.get_town_coordinates(townid);
-            auto [x,y] = xy;
-            if (!errors && (x == NO_VALUE || y == NO_VALUE))
+            try
             {
-                errorout << "Error from GUI: get_coordinates(" << townid << ") returned error (";
-                if (xy == NO_COORD)
+                auto xy = mainprg_.ds_.get_town_coordinates(townid);
+                auto [x,y] = xy;
+                if (x == NO_VALUE || y == NO_VALUE)
                 {
-                    errorout << "NO_COORD";
+                    errorset.insert("get_coordinates() returned error NO_COORD/NO_VALUE");
                 }
-                else
+
+                if (x == NO_VALUE || y == NO_VALUE)
                 {
-                    if (x == NO_VALUE) { errorout << "NO_VALUE"; } else { errorout << x; }
-                    errorout << ",";
-                    if (y == NO_VALUE) { errorout << "NO_VALUE"; } else { errorout << y; }
+                    x = 0; y = 0;
+                    towncolor = Qt::magenta;
+                    namecolor = Qt::magenta;
+                    townzvalue = 30;
                 }
-                errorout << ")" << std::endl;
-                errors = true;
-            }
 
-            if (x == NO_VALUE || y == NO_VALUE)
-            {
-                x = 0; y = 0;
-                towncolor = Qt::magenta;
-                namecolor = Qt::magenta;
-                townzvalue = 30;
-            }
-
-            string prefix;
-            auto res_town = result_towns.find(townid);
-            if (res_town != result_towns.end())
-            {
-                if (result_towns.size() > 1) { prefix = res_town->second; }
-                namecolor = Qt::red;
-                townborder = Qt::red;
-                townzvalue = 2;
-            }
-
-            auto res_place = std::find(prev_result.begin(), prev_result.end(), townid);
-
-            if (ui->towns_checkbox->isChecked())
-            {
-                auto groupitem = gscene_->createItemGroup({});
-                groupitem->setFlag(QGraphicsItem::ItemIsSelectable);
-                groupitem->setData(0, QVariant::fromValue(townid));
-
-                QPen placepen(townborder);
-                placepen.setWidth(0); // Cosmetic pen
-                auto dotitem = gscene_->addEllipse(-4*pointscale, -4*pointscale, 8*pointscale, 8*pointscale,
-                                                   placepen, QBrush(towncolor));
-                dotitem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-                groupitem->addToGroup(dotitem);
-                //        dotitem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-                //        dotitem->setData(0, QVariant::fromValue(town));
-
-                // Draw town names
-                string label = prefix;
-                if (ui->townnames_checkbox->isChecked())
+                string prefix;
+                auto res_town = result_towns.find(townid);
+                if (res_town != result_towns.end())
                 {
-                    auto name = mainprg_.ds_.get_town_name(townid);
-                    if (!errors && name == NO_NAME)
+                    if (result_towns.size() > 1) { prefix = res_town->second; }
+                    namecolor = Qt::red;
+                    townborder = Qt::red;
+                    townzvalue = 2;
+                }
+
+                if (ui->towns_checkbox->isChecked())
+                {
+                    auto groupitem = gscene_->createItemGroup({});
+                    groupitem->setFlag(QGraphicsItem::ItemIsSelectable);
+                    groupitem->setData(0, QVariant::fromValue(townid));
+
+                    QPen placepen(townborder);
+                    placepen.setWidth(0); // Cosmetic pen
+                    auto dotitem = gscene_->addEllipse(-4*pointscale, -4*pointscale, 8*pointscale, 8*pointscale,
+                                                       placepen, QBrush(towncolor));
+                    dotitem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+                    groupitem->addToGroup(dotitem);
+                    //        dotitem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+                    //        dotitem->setData(0, QVariant::fromValue(town));
+
+                    // Draw town names
+                    string label = prefix;
+                    if (ui->townnames_checkbox->isChecked())
                     {
-                        errorout << "GUI error: get_name(" << townid << ") returned error {NO_NAME}" << std::endl;
-                        errors = true;
-                    }
-
-                    label += name;
-                }
-
-                if (!label.empty())
-                {
-                    // Create extra item group to be able to set ItemIgnoresTransformations on the correct level (addSimpleText does not allow
-                    // setting initial coordinates in item coordinates
-                    auto textgroupitem = gscene_->createItemGroup({});
-                    auto textitem = gscene_->addSimpleText(QString::fromStdString(label));
-                    auto font = textitem->font();
-                    font.setPointSizeF(font.pointSizeF()*fontscale);
-                    textitem->setFont(font);
-                    textitem->setBrush(QBrush(namecolor));
-                    textitem->setPos(-textitem->boundingRect().width()/2, -4*pointscale - textitem->boundingRect().height());
-                    textgroupitem->addToGroup(textitem);
-                    textgroupitem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-                    groupitem->addToGroup(textgroupitem);
-                }
-
-                groupitem->setPos(20*x, -20*y);
-                groupitem->setZValue(townzvalue);
-            }
-
-            // Draw vassal relations
-            if (ui->vassals_checkbox->isChecked())
-            {
-                auto vassals = mainprg_.ds_.get_town_vassals(townid);
-                for (auto& vassalid : vassals)
-                {
-                    auto [vx,vy] = mainprg_.ds_.get_town_coordinates(vassalid);
-
-                    QColor linecolor = Qt::gray;
-                    int zvalue = -2;
-
-                    if (mainprg_.prev_result.first == MainProgram::ResultType::HIERARCHY)
-                    {
-                        if (res_place < prev_result.end())
+                        try
                         {
-                            if ((res_place != prev_result.begin() && *(res_place-1) == vassalid) ||
-                                (res_place+1 != prev_result.end() && *(res_place+1) == vassalid))
+                            auto name = mainprg_.ds_.get_town_name(townid);
+                            if (name == NO_NAME)
                             {
-                                linecolor = Qt::red;
-                                zvalue = 10;
+                                errorset.insert("get_town_name() returned error NO_NAME");
                             }
+
+                            label += name;
+                        }
+                        catch (NotImplemented const& e)
+                        {
+                            errorset.insert(std::string("NotImplemented while updating graphics: ") + e.what());
+                            std::cerr << std::endl << "NotImplemented while updating graphics: " << e.what() << std::endl;
                         }
                     }
 
-        //            auto pen = QPen(linecolor);
-        //            pen.setWidth(0); // "Cosmetic" pen
-        //            auto lineitem = gscene_->addLine(20*x+4, -20*y+4, 20*vx+4, -20*vy+4, pen);
-                    auto groupitem = gscene_->createItemGroup({});
-                    auto pen = QPen(linecolor);
-                    pen.setWidth(0); // "Cosmetic" pen
+                    if (!label.empty())
+                    {
+                        // Create extra item group to be able to set ItemIgnoresTransformations on the correct level (addSimpleText does not allow
+                        // setting initial coordinates in item coordinates
+                        auto textgroupitem = gscene_->createItemGroup({});
+                        auto textitem = gscene_->addSimpleText(QString::fromStdString(label));
+                        auto font = textitem->font();
+                        font.setPointSizeF(font.pointSizeF()*fontscale);
+                        textitem->setFont(font);
+                        textitem->setBrush(QBrush(namecolor));
+                        textitem->setPos(-textitem->boundingRect().width()/2, -4*pointscale - textitem->boundingRect().height());
+                        textgroupitem->addToGroup(textitem);
+                        textgroupitem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+                        groupitem->addToGroup(textgroupitem);
+                    }
 
-                    double const PI  = 3.141592653589793238463;
-                    auto arrowSize = 10*pointscale;
-                    QLineF line(QPointF(0, 0), QPointF(20*(vx-x), -20*(vy-y)));
-
-                    double angle = std::atan2(-line.dy(), line.dx());
-
-                    QPointF arrowP1 = line.p1() + QPointF(sin(angle + PI / 3) * arrowSize,
-                                                    cos(angle + PI / 3) * arrowSize);
-                    QPointF arrowP2 = line.p1() + QPointF(sin(angle + PI - PI / 3) * arrowSize,
-                                                    cos(angle + PI - PI / 3) * arrowSize);
-
-                    QPolygonF arrowHead;
-                    arrowHead << line.p1() << arrowP1 << arrowP2;
-                    auto lineitem = gscene_->addLine(line, pen);
-                    groupitem->addToGroup(lineitem);
-                    auto headitem = gscene_->addPolygon(arrowHead, pen, QBrush(pen.color()));
-                    headitem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-                    groupitem->addToGroup(headitem);
                     groupitem->setPos(20*x, -20*y);
-                    groupitem->setZValue(zvalue);
+                    groupitem->setZValue(townzvalue);
+                }
+
+                // Draw vassal relations
+                if (ui->vassals_checkbox->isChecked())
+                {
+                    try
+                    {
+                        auto vassals = mainprg_.ds_.get_town_vassals(townid);
+                        for (auto& vassalid : vassals)
+                        {
+                            auto [vx,vy] = mainprg_.ds_.get_town_coordinates(vassalid);
+
+                            QColor linecolor = Qt::gray;
+                            int zvalue = -2;
+
+                            if (mainprg_.prev_result.first == MainProgram::ResultType::HIERARCHY)
+                            {
+                                if (res_place < prev_result.end())
+                                {
+                                    if ((res_place != prev_result.begin() && *(res_place-1) == vassalid) ||
+                                        (res_place+1 != prev_result.end() && *(res_place+1) == vassalid))
+                                    {
+                                        linecolor = Qt::red;
+                                        zvalue = 10;
+                                    }
+                                }
+                            }
+
+                //            auto pen = QPen(linecolor);
+                //            pen.setWidth(0); // "Cosmetic" pen
+                //            auto lineitem = gscene_->addLine(20*x+4, -20*y+4, 20*vx+4, -20*vy+4, pen);
+                            auto groupitem = gscene_->createItemGroup({});
+                            auto pen = QPen(linecolor);
+                            pen.setWidth(0); // "Cosmetic" pen
+
+                            double const PI  = 3.141592653589793238463;
+                            auto arrowSize = 10*pointscale;
+                            QLineF line(QPointF(0, 0), QPointF(20*(vx-x), -20*(vy-y)));
+
+                            double angle = std::atan2(-line.dy(), line.dx());
+
+                            QPointF arrowP1 = line.p1() + QPointF(sin(angle + PI / 3) * arrowSize,
+                                                            cos(angle + PI / 3) * arrowSize);
+                            QPointF arrowP2 = line.p1() + QPointF(sin(angle + PI - PI / 3) * arrowSize,
+                                                            cos(angle + PI - PI / 3) * arrowSize);
+
+                            QPolygonF arrowHead;
+                            arrowHead << line.p1() << arrowP1 << arrowP2;
+                            auto lineitem = gscene_->addLine(line, pen);
+                            groupitem->addToGroup(lineitem);
+                            auto headitem = gscene_->addPolygon(arrowHead, pen, QBrush(pen.color()));
+                            headitem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+                            groupitem->addToGroup(headitem);
+                            groupitem->setPos(20*x, -20*y);
+                            groupitem->setZValue(zvalue);
+                        }
+                    }
+                    catch (NotImplemented const& e)
+                    {
+                        errorset.insert(std::string("NotImplemented while updating graphics: ") + e.what());
+                        std::cerr << std::endl << "NotImplemented while updating graphics: " << e.what() << std::endl;
+                    }
                 }
             }
-        }
-
-        if (errors)
-        {
-            output_text(errorout);
-            output_text_end();
+            catch (NotImplemented const& e)
+            {
+                errorset.insert(std::string("NotImplemented while updating graphics: ") + e.what());
+                std::cerr << std::endl << "NotImplemented while updating graphics: " << e.what() << std::endl;
+            }
         }
     }
     catch (NotImplemented const& e)
     {
-        errorout << std::endl << "NotImplemented while updating graphics: " << e.what() << std::endl;
+        errorset.insert(std::string("NotImplemented while updating graphics: ") + e.what());
         std::cerr << std::endl << "NotImplemented while updating graphics: " << e.what() << std::endl;
-        output_text(errorout);
+    }
+
+    if (!errorset.empty())
+    {
+        std::ostringstream errorstream;
+        for (auto const& errormsg : errorset)
+        {
+            errorstream << "Error from GUI: " << errormsg << std::endl;
+        }
+        output_text(errorstream);
         output_text_end();
     }
 }

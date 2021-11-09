@@ -122,6 +122,7 @@ private:
     CmdResult cmd_perftest(std::ostream& output, MatchIter begin, MatchIter end);
     CmdResult cmd_comment(std::ostream& output, MatchIter begin, MatchIter end);
 
+    void test_print_town();
     void test_towns_nearest();
     void test_taxer_path();
     void test_longest_vassal_path();

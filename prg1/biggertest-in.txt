@@ -1,0 +1,19 @@
+# Read in a bigger set of towns
+clear_all
+read "towns-data.txt" silent
+read "towns-vassals-data.txt" silent
+# Do tests
+town_count
+towns_alphabetically 
+mindist 
+maxdist 
+towns_distance_increasing
+find_towns Tampere
+find_towns Turku
+town_vassals Hto
+town_vassals Iri
+town_vassals xxx
+taxer_path Keu
+taxer_path Lai
+taxer_path Pmi
+quit
