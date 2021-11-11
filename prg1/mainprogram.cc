@@ -526,7 +526,7 @@ string MainProgram::print_town(TownID id, ostream& output, bool nl)
     }
 }
 
-MainProgram::CmdResult MainProgram::cmd_find_towns(ostream& /*output*/, MatchIter begin, MatchIter end)
+MainProgram::CmdResult MainProgram::cmd_find_towns(ostream& output, MatchIter begin, MatchIter end)
 {
     string name = *begin++;
     assert( begin == end && "Impossible number of parameters!");
@@ -534,7 +534,10 @@ MainProgram::CmdResult MainProgram::cmd_find_towns(ostream& /*output*/, MatchIte
     auto result = ds_.find_towns(name);
     std::sort(result.begin(), result.end());
 
-    if (result.empty()) { result = {NO_TOWNID}; }
+    if (result.empty())
+    {
+        output << "No towns found!" << std::endl;
+    }
 
     return {ResultType::LIST, result};
 }

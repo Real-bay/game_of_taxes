@@ -69,7 +69,7 @@ Utsjoki: tax=1247, pos=(70,210), id=Uki
 > find_towns Tampere
 Tampere: tax=230537, pos=(40,40), id=Tpe
 > find_towns Turku
-Failed (NO_... returned)!!
+No towns found!
 > town_vassals Hto
 1. Hyrynsalmi: tax=2341, pos=(80,120), id=Hmi
 2. Iisalmi: tax=21675, pos=(70,90), id=Ilm
