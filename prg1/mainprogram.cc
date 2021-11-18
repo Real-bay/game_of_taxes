@@ -266,7 +266,15 @@ MainProgram::CmdResult MainProgram::cmd_total_net_tax(std::ostream& output, Main
 
     auto result = ds_.total_net_tax(id);
     auto name = ds_.get_town_name(id);
-    output << "Total net tax of " << name <<": " << result << endl;
+    output << "Total net tax of " << name <<": ";
+    if (result != NO_VALUE)
+    {
+        output << result << endl;
+    }
+    else
+    {
+        output << "NO_VALUE" << endl;
+    }
 
     return {};
 }
