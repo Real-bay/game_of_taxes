@@ -494,18 +494,27 @@ string MainProgram::print_town(TownID id, ostream& output, bool nl)
             auto xy = ds_.get_town_coordinates(id);
             if (!name.empty())
             {
-                int tax = ds_.get_town_tax(id);
-                output << name << ": tax=" << tax << ", ";
+                output << name << ": ";
             }
             else
             {
                 output << "*: ";
             }
 
-             output << "pos=";
-             print_coord(xy, output, false);
-             output << ", id=" << id;
-             if (nl) { output << endl; }
+            auto tax = ds_.get_town_tax(id);
+            if (tax != NO_VALUE)
+            {
+                output << "tax=" << tax << ", ";
+            }
+            else
+            {
+                output << "tax=NO_VALUE, ";
+            }
+
+            output << "pos=";
+            print_coord(xy, output, false);
+            output << ", id=" << id;
+            if (nl) { output << endl; }
 
             ostringstream retstream;
             retstream << id;
