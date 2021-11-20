@@ -95,43 +95,45 @@ public:
     Datastructures();
     ~Datastructures();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(1)
+    // Short rationale for estimate: Documentation states the complexity is constant.
     unsigned int town_count();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: Documentation states the complexity is linear.
     void clear_all();
 
-    // Estimate of performance:
+    // Estimate of performance: O(n)
     // Short rationale for estimate:
     bool add_town(TownID id, Name const& name, Coord coord, int tax);
 
-    // Estimate of performance:
+    // Estimate of performance: O(n)
     // Short rationale for estimate:
     Name get_town_name(TownID id);
 
-    // Estimate of performance:
+    // Estimate of performance: O(n)
     // Short rationale for estimate:
     Coord get_town_coordinates(TownID id);
 
-    // Estimate of performance:
+    // Estimate of performance: O(n)
     // Short rationale for estimate:
     int get_town_tax(TownID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: For-loop iterates through the entire data
+    // structure once
     std::vector<TownID> all_towns();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: For-loop iterates through the entire data
+    // structure once
     std::vector<TownID> find_towns(Name const& name);
 
     // Estimate of performance:
     // Short rationale for estimate:
     bool change_town_name(TownID id, Name const& newname);
 
-    // Estimate of performance:
+    // Estimate of performance: O(n log n)
     // Short rationale for estimate:
     std::vector<TownID> towns_alphabetically();
 
@@ -184,9 +186,18 @@ private:
         Name name;
         Coord coord;
         int tax;
+        town_data *master_ = nullptr;
+        std::vector<town_data*> vassals_ = {};
+
     } ;
 
+    using Distance = int;
+
+    const Coord origin_ = {0,0};
+
     std::unordered_map<TownID, town_data> all_town_data_;
+
+    int distance_from_coord(Coord coord1, Coord coord2);
 
 };
 
