@@ -14,7 +14,7 @@ Failed (NO_... returned)!!
 > maxdist
 Failed (NO_... returned)!!
 > find_towns Notown
-Failed (NO_... returned)!!
+No towns found!
 > # Add one town and test commands
 > add_town Tpe Tampere (3,4) 100
 Tampere: tax=100, pos=(3,4), id=Tpe
@@ -35,7 +35,7 @@ Tampere: tax=100, pos=(3,4), id=Tpe
 > change_town_name Tpe Manse
 Manse: tax=100, pos=(3,4), id=Tpe
 > find_towns Tampere
-Failed (NO_... returned)!!
+No towns found!
 > find_towns Manse
 Manse: tax=100, pos=(3,4), id=Tpe
 > add_town Tla Toijala (3,2) 10

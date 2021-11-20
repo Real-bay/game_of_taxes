@@ -266,7 +266,15 @@ MainProgram::CmdResult MainProgram::cmd_total_net_tax(std::ostream& output, Main
 
     auto result = ds_.total_net_tax(id);
     auto name = ds_.get_town_name(id);
-    output << "Total net tax of " << name <<": " << result << endl;
+    output << "Total net tax of " << name <<": ";
+    if (result != NO_VALUE)
+    {
+        output << result << endl;
+    }
+    else
+    {
+        output << "NO_VALUE" << endl;
+    }
 
     return {};
 }
@@ -494,18 +502,27 @@ string MainProgram::print_town(TownID id, ostream& output, bool nl)
             auto xy = ds_.get_town_coordinates(id);
             if (!name.empty())
             {
-                int tax = ds_.get_town_tax(id);
-                output << name << ": tax=" << tax << ", ";
+                output << name << ": ";
             }
             else
             {
                 output << "*: ";
             }
 
-             output << "pos=";
-             print_coord(xy, output, false);
-             output << ", id=" << id;
-             if (nl) { output << endl; }
+            auto tax = ds_.get_town_tax(id);
+            if (tax != NO_VALUE)
+            {
+                output << "tax=" << tax << ", ";
+            }
+            else
+            {
+                output << "tax=NO_VALUE, ";
+            }
+
+            output << "pos=";
+            print_coord(xy, output, false);
+            output << ", id=" << id;
+            if (nl) { output << endl; }
 
             ostringstream retstream;
             retstream << id;
@@ -526,7 +543,7 @@ string MainProgram::print_town(TownID id, ostream& output, bool nl)
     }
 }
 
-MainProgram::CmdResult MainProgram::cmd_find_towns(ostream& /*output*/, MatchIter begin, MatchIter end)
+MainProgram::CmdResult MainProgram::cmd_find_towns(ostream& output, MatchIter begin, MatchIter end)
 {
     string name = *begin++;
     assert( begin == end && "Impossible number of parameters!");
@@ -534,7 +551,10 @@ MainProgram::CmdResult MainProgram::cmd_find_towns(ostream& /*output*/, MatchIte
     auto result = ds_.find_towns(name);
     std::sort(result.begin(), result.end());
 
-    if (result.empty()) { result = {NO_TOWNID}; }
+    if (result.empty())
+    {
+        output << "No towns found!" << std::endl;
+    }
 
     return {ResultType::LIST, result};
 }
