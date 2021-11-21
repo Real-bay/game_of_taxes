@@ -96,69 +96,84 @@ public:
     ~Datastructures();
 
     // Estimate of performance: O(1)
-    // Short rationale for estimate: Documentation states the complexity is constant.
+    // Short rationale for estimate: Documentation states the complexity
+    // of .size() is constant.
     unsigned int town_count();
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate: Documentation states the complexity is linear.
+    // Short rationale for estimate: Documentation states the complexity
+    // of .clear() is linear.
     void clear_all();
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate:
+    // Short rationale for estimate: The complexity of .find() is
+    // expected to be linear at worst, as is indexing the data structure.
     bool add_town(TownID id, Name const& name, Coord coord, int tax);
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate:
+    // Short rationale for estimate: The complexity of .find() is
+    // expected to be linear at worst, as is indexing the data structure.
     Name get_town_name(TownID id);
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate:
+    // Short rationale for estimate: The complexity of .find() is
+    // expected to be linear at worst, as is indexing the data structure.
     Coord get_town_coordinates(TownID id);
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate:
+    // Short rationale for estimate: The complexity of .find() is
+    // expected to be linear at worst, as is indexing the data structure.
     int get_town_tax(TownID id);
 
     // Estimate of performance: O(n)
     // Short rationale for estimate: For-loop iterates through the entire data
-    // structure once
+    // structure once.
     std::vector<TownID> all_towns();
 
     // Estimate of performance: O(n)
     // Short rationale for estimate: For-loop iterates through the entire data
-    // structure once
+    // structure once.
     std::vector<TownID> find_towns(Name const& name);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: The complexity of .find() is
+    // expected to be linear at worst, as is indexing the data structure.
     bool change_town_name(TownID id, Name const& newname);
 
     // Estimate of performance: O(n log n)
-    // Short rationale for estimate:
+    // Short rationale for estimate: Inserting into a map has a complexity
+    // of O(log n), the for-loops are linear.
     std::vector<TownID> towns_alphabetically();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n log n)
+    // Short rationale for estimate: Inserting into a map has a complexity
+    // of O(log n), the for-loops are linear.
     std::vector<TownID> towns_distance_increasing();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: Std::min_element does at most
+    // N comparisons, the calculations are constant.
     TownID min_distance();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: Std::max_element does at most
+    // N comparisons, the calculations are constant.
     TownID max_distance();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: The complexity of .find() is
+    // expected to be linear at worst.
     bool add_vassalship(TownID vassalid, TownID masterid);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: The complexity of .find() is
+    // expected to be linear at worst, as is looping through vassals.
     std::vector<TownID> get_town_vassals(TownID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n²), theta(n)
+    // Short rationale for estimate: The for-loop can potentially loop
+    // through the entire data structure, as well as index the data structure on
+    // each round of the loop with .at().
     std::vector<TownID> taxer_path(TownID id);
 
     // Non-compulsory phase 1 operations
@@ -180,7 +195,7 @@ public:
     int total_net_tax(TownID id);
 
 private:
-    // Add stuff needed for your class implementation here
+    // Struct that contains all data for a single town
     struct town_data {
         TownID town_id;
         Name name;
@@ -197,6 +212,8 @@ private:
 
     std::unordered_map<TownID, town_data> all_town_data_;
 
+    // Estimate of performance: O(1), theta(1)
+    // Short rationale for estimate: A simple calculation
     int distance_from_coord(Coord coord1, Coord coord2);
 
 };

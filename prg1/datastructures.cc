@@ -185,6 +185,7 @@ std::vector<TownID> Datastructures::towns_distance_increasing()
     std::multimap<int,TownID> mm_distance;
     std::vector<TownID> vec_distance;
 
+    // Copies all towns to a map for distance order
     for (auto& it: all_town_data_)
     {
         int dist = distance_from_coord(origin_,it.second.coord);
@@ -192,6 +193,7 @@ std::vector<TownID> Datastructures::towns_distance_increasing()
 
     }
 
+    // Creates a vector for the return
     for (auto& it: mm_distance)
     {
         vec_distance.push_back(it.second);
