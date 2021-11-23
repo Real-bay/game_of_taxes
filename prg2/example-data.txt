@@ -1,0 +1,17 @@
+# Adding towns
+add_town Hki Helsinki (3,0) 3
+add_town Tpe Tampere (2,2) 4
+add_town Ol Oulu (3,7) 10
+add_town Kuo Kuopio (6,3) 9
+add_town Tku Turku (1,1) 2
+# Adding crossroads as extra towns
+add_town x1 xx (3,3) 6
+add_town x2 xy (4,4) 8
+# Adding roads
+add_road Tpe x1
+# add_road x1 x2
+add_road x2 Ol
+add_road Ol Kuo
+add_road Tpe Kuo
+add_road Hki Tpe
+add_road Tpe Tku
