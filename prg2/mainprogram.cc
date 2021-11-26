@@ -501,7 +501,7 @@ MainProgram::CmdResult MainProgram::cmd_all_roads(std::ostream& output, MainProg
     {
         auto coord1 = ds_.get_town_coordinates(p.first);
         auto coord2 = ds_.get_town_coordinates(p.second);
-        auto dist = abs(coord1.x-coord2.x) + abs(coord1.y-coord2.y);
+        auto dist = calc_distance(coord1, coord2);
         output << n << ": " << p.first << " <-> " << p.second << " (" << dist << ")" << std::endl;
         ++n;
     }

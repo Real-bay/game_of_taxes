@@ -37,12 +37,12 @@ Added road: Tampere <-> Turku
 > 
 ** End of commands from 'example-data.txt'
 > all_roads
-1: Hki <-> Tpe (3)
-2: Kuo <-> Ol (7)
-3: Kuo <-> Tpe (5)
-4: Ol <-> x2 (4)
-5: Tku <-> Tpe (2)
-6: Tpe <-> x1 (2)
+1: Hki <-> Tpe (2)
+2: Kuo <-> Ol (5)
+3: Kuo <-> Tpe (4)
+4: Ol <-> x2 (3)
+5: Tku <-> Tpe (1)
+6: Tpe <-> x1 (1)
 > roads_from Tpe
 1. Helsinki: tax=3, pos=(3,0), id=Hki
 2. Kuopio: tax=9, pos=(6,3), id=Kuo
@@ -82,21 +82,21 @@ Removed road: Tampere <-> Helsinki
 2. Turku: tax=2, pos=(1,1), id=Tku
 3. xx: tax=6, pos=(3,3), id=x1
 > all_roads
-1: Kuo <-> Ol (7)
-2: Kuo <-> Tpe (5)
-3: Ol <-> x2 (4)
-4: Tku <-> Tpe (2)
-5: Tpe <-> x1 (2)
-6: x1 <-> x2 (2)
+1: Kuo <-> Ol (5)
+2: Kuo <-> Tpe (4)
+3: Ol <-> x2 (3)
+4: Tku <-> Tpe (1)
+5: Tpe <-> x1 (1)
+6: x1 <-> x2 (1)
 > add_road Hki Tpe
 Added road: Helsinki <-> Tampere
 > trim_road_network
 The remaining road network has total distance of 12
 > all_roads
-1: Hki <-> Tpe (3)
-2: Kuo <-> Tpe (5)
-3: Ol <-> x2 (4)
-4: Tku <-> Tpe (2)
-5: Tpe <-> x1 (2)
-6: x1 <-> x2 (2)
+1: Hki <-> Tpe (2)
+2: Kuo <-> Tpe (4)
+3: Ol <-> x2 (3)
+4: Tku <-> Tpe (1)
+5: Tpe <-> x1 (1)
+6: x1 <-> x2 (1)
 > 
