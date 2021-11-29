@@ -496,6 +496,8 @@ MainProgram::CmdResult MainProgram::cmd_all_roads(std::ostream& output, MainProg
         output << "No roads!" << endl;
     }
 
+    std::sort(roads.begin(), roads.end());
+
     unsigned long int n = 1;
     for (auto const& p : roads)
     {
@@ -549,6 +551,8 @@ MainProgram::CmdResult MainProgram::cmd_roads_from(std::ostream& output, MainPro
     {
         output << "No roads!" << endl;
     }
+
+    std::sort(vassals.begin(), vassals.end());
 
     return {ResultType::LIST, vassals};
 }
