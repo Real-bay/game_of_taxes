@@ -1,4 +1,4 @@
-> # Bigger test of compulsory operations
+> # Bigger test of remove_road
 > clear_all
 Cleared all towns
 > town_count
