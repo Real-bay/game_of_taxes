@@ -1,0 +1,2 @@
+# Test the performance of shortest_route, adding towns and roads in between
+perftest shortest_route;random_add;random_roads 20 1000 10;30;100;300;1000;3000;10000;30000;100000;300000;1000000

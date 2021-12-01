@@ -1,0 +1,13 @@
+# Bigger test of trim_road_network
+clear_all
+town_count
+read "towns-data.txt" silent
+all_roads
+trim_road_network
+# Add extra roads
+add_road Ktn Lai
+add_road Ilm Mka
+add_road Smo Ilm
+add_road Roi Pmi
+trim_road_network
+all_roads

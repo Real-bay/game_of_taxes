@@ -1,0 +1,65 @@
+> # raakile/skeleton tests
+> clear_all
+Cleared all towns
+> town_count
+Number of towns: 0
+> all_roads
+No roads!
+> add_town x1 First (1,1) 11
+First: tax=11, pos=(1,1), id=x1
+> add_town x2 Second (2,2) 22
+Second: tax=22, pos=(2,2), id=x2
+> add_town x3 Third (3,3) 33
+Third: tax=33, pos=(3,3), id=x3
+> town_count
+Number of towns: 3
+> all_roads
+No roads!
+> add_road x1 x2
+Added road: First <-> Second
+> all_roads
+1: x1 <-> x2 (1)
+> roads_from x1
+Second: tax=22, pos=(2,2), id=x2
+> roads_from x2
+First: tax=11, pos=(1,1), id=x1
+> roads_from x3
+No roads!
+> add_road x1 x3
+Added road: First <-> Third
+> all_roads
+1: x1 <-> x2 (1)
+2: x1 <-> x3 (2)
+> roads_from x1
+1. Second: tax=22, pos=(2,2), id=x2
+2. Third: tax=33, pos=(3,3), id=x3
+> roads_from x2
+First: tax=11, pos=(1,1), id=x1
+> roads_from x3
+First: tax=11, pos=(1,1), id=x1
+> add_road x3 x2
+Added road: Third <-> Second
+> all_roads
+1: x1 <-> x2 (1)
+2: x1 <-> x3 (2)
+3: x2 <-> x3 (1)
+> roads_from x1
+1. Second: tax=22, pos=(2,2), id=x2
+2. Third: tax=33, pos=(3,3), id=x3
+> roads_from x2
+1. First: tax=11, pos=(1,1), id=x1
+2. Third: tax=33, pos=(3,3), id=x3
+> roads_from x3
+1. First: tax=11, pos=(1,1), id=x1
+2. Second: tax=22, pos=(2,2), id=x2
+> clear_roads
+All roads removed.
+> all_roads
+No roads!
+> roads_from x1
+No roads!
+> roads_from x2
+No roads!
+> roads_from x3
+No roads!
+> 

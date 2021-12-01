@@ -1,0 +1,41 @@
+> # Simple test of road_cycle_route
+> clear_all
+Cleared all towns
+> town_count
+Number of towns: 0
+> all_roads
+No roads!
+> # Add two towns and two crossroad
+> add_town t1 One (0,0) 0
+One: tax=0, pos=(0,0), id=t1
+> add_town x1 xx (0,3) 3
+xx: tax=3, pos=(0,3), id=x1
+> add_town t2 Two (2,2) 4
+Two: tax=4, pos=(2,2), id=t2
+> add_town x2 xy (1,0) 1
+xy: tax=1, pos=(1,0), id=x2
+> # Add four roads
+> add_road t1 x1
+Added road: One <-> xx
+> add_road x1 t2
+Added road: xx <-> Two
+> add_road x1 x2
+Added road: xx <-> xy
+> all_roads
+1: t1 <-> x1 (3)
+2: t2 <-> x1 (2)
+3: x1 <-> x2 (3)
+> # Check road cycles from One
+> road_cycle_route t1
+No route found.
+> # Add one road to form a cycle
+> add_road x2 t2
+Added road: xy <-> Two
+> # Check road cycles from One again
+> road_cycle_route t1
+1. One
+2. xx (distance 3)
+3. Two (distance 5)
+4. xy (distance 7)
+5. xx (distance 10)
+> 
