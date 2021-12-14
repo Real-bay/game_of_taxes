@@ -1,0 +1,7 @@
+clear_all
+read "example-data.txt"
+# First add a road to create more routes
+all_roads
+road_cycle_route Tku
+add_road x1 x2
+road_cycle_route Tku

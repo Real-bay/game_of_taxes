@@ -1,0 +1,49 @@
+# Add towns
+add_town Slo Salo (30,30) 53188
+add_town Ktn Kaustinen (40,100) 4302
+add_town Sla Salla (90,160) 3600
+add_town Hmi Hyrynsalmi (80,120) 2341
+add_town Nnl Naantali (20,20) 19124
+add_town Kli Kolari (40,160) 3797
+add_town Roi Rovaniemi (60,150) 62037
+add_town Lai Laihia (30,80) 8098
+add_town Keu Keuruu (50,60) 9953
+add_town Ilm Iisalmi (70,90) 21675
+add_town Rma Rauma (20,40) 39612
+add_town Hki Helsinki (50,20) 642045
+add_town Smo Sotkamo (80,100) 10452
+add_town Iri Inari (80,190) 6830
+add_town Par Parikkala (90,50) 5030
+add_town Lr Lappeenranta (80,50) 72685
+add_town Hma Hamina (70,30) 20554
+add_town Pmi Pelkosenniemi (70,160) 949
+add_town Mka Maaninka (70,80) 3748
+add_town Uki Utsjoki (70,210) 1247
+add_town Kmo Kuusamo (90,130) 15391
+add_town Mhn Maarianhamina (0,10) 11658
+add_town Tpe Tampere (40,40) 230537
+add_town Hto Hailuoto (50,120) 981
+# Add roads
+add_road Hki Keu
+add_road Hki Mhn
+add_road Hma Keu
+add_road Hmi Ilm
+add_road Hmi Ktn
+add_road Hto Kli
+add_road Hto Pmi
+add_road Iri Pmi
+add_road Iri Roi
+add_road Iri Sla
+add_road Keu Mka
+add_road Kli Ktn
+add_road Kmo Pmi
+add_road Kmo Smo
+add_road Ktn Mka
+add_road Lai Tpe
+add_road Lr Mka
+add_road Lr Par
+add_road Mhn Rma
+add_road Nnl Rma
+add_road Rma Slo
+add_road Roi Uki
+add_road Slo Tpe

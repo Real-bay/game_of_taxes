@@ -1,0 +1,11 @@
+clear_all
+clear_roads
+read "example-data.txt"
+all_roads
+roads_from Tpe
+roads_from Kuo
+# Remove a road
+remove_road Kuo Tpe
+all_roads
+roads_from Tpe
+roads_from Kuo

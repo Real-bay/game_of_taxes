@@ -1,0 +1,53 @@
+> clear_all
+Cleared all towns
+> read "example-data.txt"
+** Commands from 'example-data.txt'
+> # Adding towns
+> add_town Hki Helsinki (3,0) 3
+Helsinki: tax=3, pos=(3,0), id=Hki
+> add_town Tpe Tampere (2,2) 4
+Tampere: tax=4, pos=(2,2), id=Tpe
+> add_town Ol Oulu (3,7) 10
+Oulu: tax=10, pos=(3,7), id=Ol
+> add_town Kuo Kuopio (6,3) 9
+Kuopio: tax=9, pos=(6,3), id=Kuo
+> add_town Tku Turku (1,1) 2
+Turku: tax=2, pos=(1,1), id=Tku
+> # Adding crossroads as extra towns
+> add_town x1 xx (3,3) 6
+xx: tax=6, pos=(3,3), id=x1
+> add_town x2 xy (4,4) 8
+xy: tax=8, pos=(4,4), id=x2
+> # Adding roads
+> add_road Tpe x1
+Added road: Tampere <-> xx
+> # add_road x1 x2
+> add_road x2 Ol
+Added road: xy <-> Oulu
+> add_road Ol Kuo
+Added road: Oulu <-> Kuopio
+> add_road Tpe Kuo
+Added road: Tampere <-> Kuopio
+> add_road Hki Tpe
+Added road: Helsinki <-> Tampere
+> add_road Tpe Tku
+Added road: Tampere <-> Turku
+> 
+** End of commands from 'example-data.txt'
+> # First add a road to create more routes
+> add_road x1 x2
+Added road: xx <-> xy
+> all_roads
+1: Hki <-> Tpe (2)
+2: Kuo <-> Ol (5)
+3: Kuo <-> Tpe (4)
+4: Ol <-> x2 (3)
+5: Tku <-> Tpe (1)
+6: Tpe <-> x1 (1)
+7: x1 <-> x2 (1)
+> least_towns_route Hki Ol
+1. Helsinki
+2. Tampere (distance 2)
+3. Kuopio (distance 6)
+4. Oulu (distance 11)
+> 

@@ -1,0 +1,71 @@
+> # Bigger test of trim_road_network
+> clear_all
+Cleared all towns
+> town_count
+Number of towns: 0
+> read "towns-data.txt" silent
+** Commands from 'towns-data.txt'
+...(output discarded in silent mode)...
+** End of commands from 'towns-data.txt'
+> all_roads
+1: Hki <-> Keu (40)
+2: Hki <-> Mhn (50)
+3: Hma <-> Keu (36)
+4: Hmi <-> Ilm (31)
+5: Hmi <-> Ktn (44)
+6: Hto <-> Kli (41)
+7: Hto <-> Pmi (44)
+8: Iri <-> Pmi (31)
+9: Iri <-> Roi (44)
+10: Iri <-> Sla (31)
+11: Keu <-> Mka (28)
+12: Kli <-> Ktn (60)
+13: Kmo <-> Pmi (36)
+14: Kmo <-> Smo (31)
+15: Ktn <-> Mka (36)
+16: Lai <-> Tpe (41)
+17: Lr <-> Mka (31)
+18: Lr <-> Par (10)
+19: Mhn <-> Rma (36)
+20: Nnl <-> Rma (20)
+21: Rma <-> Slo (14)
+22: Roi <-> Uki (60)
+23: Slo <-> Tpe (14)
+> trim_road_network
+The remaining road network has total distance of 809
+> # Add extra roads
+> add_road Ktn Lai
+Added road: Kaustinen <-> Laihia
+> add_road Ilm Mka
+Added road: Iisalmi <-> Maaninka
+> add_road Smo Ilm
+Added road: Sotkamo <-> Iisalmi
+> add_road Roi Pmi
+Added road: Rovaniemi <-> Pelkosenniemi
+> trim_road_network
+The remaining road network has total distance of 671
+> all_roads
+1: Hki <-> Keu (40)
+2: Hma <-> Keu (36)
+3: Hmi <-> Ilm (31)
+4: Hto <-> Kli (41)
+5: Hto <-> Pmi (44)
+6: Ilm <-> Mka (10)
+7: Ilm <-> Smo (14)
+8: Iri <-> Pmi (31)
+9: Iri <-> Sla (31)
+10: Keu <-> Mka (28)
+11: Kmo <-> Pmi (36)
+12: Kmo <-> Smo (31)
+13: Ktn <-> Lai (22)
+14: Ktn <-> Mka (36)
+15: Lai <-> Tpe (41)
+16: Lr <-> Mka (31)
+17: Lr <-> Par (10)
+18: Mhn <-> Rma (36)
+19: Nnl <-> Rma (20)
+20: Pmi <-> Roi (14)
+21: Rma <-> Slo (14)
+22: Roi <-> Uki (60)
+23: Slo <-> Tpe (14)
+> 

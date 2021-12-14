@@ -1,0 +1,10 @@
+# Bigger test of least_towns_route
+clear_all
+town_count
+read "towns-data.txt" silent
+all_roads
+add_road Lai Ktn
+least_towns_route Nnl Kli
+# Add one road providing path with bigger distance but less towns
+add_road Hki Ktn
+least_towns_route Nnl Kli

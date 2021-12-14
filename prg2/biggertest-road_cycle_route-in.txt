@@ -1,0 +1,9 @@
+# Bigger test of road_cycle_route
+clear_all
+town_count
+read "towns-data.txt" silent
+all_roads
+road_cycle_route Uki
+# Create a cycle
+add_road Lai Keu
+road_cycle_route Uki

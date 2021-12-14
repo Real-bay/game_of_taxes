@@ -1,0 +1,15 @@
+# Simple test of least_towns_route
+clear_all
+town_count
+all_roads
+# Add two towns and one crossroad
+add_town t1 One (0,0) 0
+add_town t2 Two (2,2) 4
+add_town x1 xx (1,0) 1
+# Add three roads
+add_road t1 x1
+add_road x1 t2
+add_road t1 t2
+all_roads
+# Check route with least roads
+least_towns_route t1 t2
