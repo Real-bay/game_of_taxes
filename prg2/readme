@@ -1,0 +1,47 @@
+COMP.CS.300 Harjoitustyo osa 2 - Game of Taxes README
+Matias Aitolahti
+matias.aitolahti@tuni.fi
+H293115
+
+General
+The purpose of this document is to describe and rationalize the design decisions and algorithm choices made for this project. This REAMDE will only cover the second part of the project.
+(This readme is written in English for the sake of completeness)
+
+
+Data structure choices:
+For the second part, a few new data structures were added. The added as a general structure is all_roads_, which is used mainly for fast reference for the all_roads() -function. Additionally, each town_data -struct has had two further vectors added, connected_towns_ for quick access to just the TownID:s of each connected town, and roads_, which is used for more general operations.
+
+
+Functions:
+Only covering newly implemented functions, as previous ones required no modification.
+
+clear_roads(): O(n²)
+Documentation states that the complexity of std::for_each is O(n), as is the complexity of .clear().
+
+all_roads(): O(n)
+While theoretically only one return, presumed to actually copy over the entire vector "under the hood".
+
+add_road(): O(n)
+The complexity of std::find is expected to be linear at worst.
+
+get_roads_from(): O(n)
+The complexity of std::find is expected to be linear at worst.
+
+any_route(): O(n+k)
+Uses least_towns_route(), so the performance is identical.
+
+least_towns_route(): O(n+k), where n=towns and k=roads
+Regardless of the complex loop structure, does indeed only scale up to n+k. (explained very in-depth in Week 11s video on BFS efficiency).
+
+
+
+
+
+
+
+
+
+
+
+
+

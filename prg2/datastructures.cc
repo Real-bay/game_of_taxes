@@ -373,43 +373,14 @@ int Datastructures::total_net_tax(TownID /*id*/)
 void Datastructures::clear_roads()
 {
     // Clears the roads_ and connected_towns_ -vectors of each town.
-    std::for_each(all_town_data_.begin(),all_town_data_.end(),[] (auto town) {town.second.roads_.clear();});
-    std::for_each(all_town_data_.begin(),all_town_data_.end(),[] (auto town) {town.second.connected_towns_.clear();});
+    std::for_each(all_town_data_.begin(),all_town_data_.end(),[] (auto& town) {town.second.roads_.clear();});
+    std::for_each(all_town_data_.begin(),all_town_data_.end(),[] (auto& town) {town.second.connected_towns_.clear();});
     all_roads_.clear();
 }
 
 std::vector<std::pair<TownID, TownID>> Datastructures::all_roads()
 {
-    std::vector<std::pair<TownID,TownID>> roads;
-    roads.reserve(all_roads_.size());
-
-    // Go through each town
-    for(auto& it : all_town_data_)
-    {
-        // Check if the current town is found as a destination
-        auto it2 = std::find_if(roads.begin(),roads.end(),
-                                [&it](auto& town){return town.second == it.first;});
-
-        std::vector<TownID> current_destinations = {};
-
-        // Go through connected_towns_
-        for (auto& it3 : it.second.connected_towns_)
-        {
-            if (it2 != roads.end())
-                break;
-
-            current_destinations.push_back(it3);
-        }
-
-        // Make pairs of "it" and each connected town and
-        // push_back pairs to return vector
-        std::for_each(current_destinations.begin(),current_destinations.end(),
-                      [&it, &roads](auto& town){roads.push_back(std::make_pair(it.first,town));});
-
-    }
-
-    // Return completed vector
-    return roads;
+    return all_roads_;
 }
 
 bool Datastructures::add_road(TownID town1, TownID town2)
@@ -482,6 +453,7 @@ std::vector<TownID> Datastructures::get_roads_from(TownID id)
 
 std::vector<TownID> Datastructures::any_route(TownID fromid, TownID toid)
 {
+    // Uses least_towns_route to avoid copy-paste code
     return least_towns_route(fromid,toid);
 }
 
@@ -518,6 +490,7 @@ std::vector<TownID> Datastructures::least_towns_route(TownID fromid, TownID toid
     {
         it.second.search_parent = nullptr;
         it.second.search_color = white;
+        // "set to infinity"
         it.second.search_distance = INT32_MAX;
     }
 
@@ -576,6 +549,9 @@ std::vector<TownID> Datastructures::least_towns_route(TownID fromid, TownID toid
         found_route.push_back(temp.search_parent->town_id);
         temp = *temp.search_parent;
     }
+
+    // Reverse the vector to the proper order (start, ... , end)
+    std::reverse(found_route.begin(), found_route.end());
 
     return found_route;
 }

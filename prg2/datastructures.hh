@@ -181,23 +181,25 @@ public:
     // Phase 2 operations
 
     // Estimate of performance: O(n²)
-    // Short rationale for estimate:
+    // Short rationale for estimate: Documentation states that the complexity of std::for_each is O(n),
+    // as is the complexity of .clear().
     void clear_roads();
 
-    // Estimate of performance: O(n²)
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: While theoretically only one return,
+    // presumed to actually copy over the entire vector "under the hood".
     std::vector<std::pair<TownID, TownID>> all_roads();
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate:
+    // Short rationale for estimate: The complexity of std::find is expected to be linear at worst.
     bool add_road(TownID town1, TownID town2);
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate:
+    // Short rationale for estimate: The complexity of std::find is expected to be linear at worst.
     std::vector<TownID> get_roads_from(TownID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n+k)
+    // Short rationale for estimate: Uses least_towns_route(), so the performance is identical.
     std::vector<TownID> any_route(TownID fromid, TownID toid);
 
     // Non-compulsory phase 2 operations
@@ -206,8 +208,10 @@ public:
     // Short rationale for estimate:
     bool remove_road(TownID town1, TownID town2);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n+k)
+    // Short rationale for estimate: Regardless of the complex loop structure,
+    // does indeed only scale up to n+k.
+    // (explained very in-depth in Week 11s video on BFS efficiency).
     std::vector<TownID> least_towns_route(TownID fromid, TownID toid);
 
     // Estimate of performance:
