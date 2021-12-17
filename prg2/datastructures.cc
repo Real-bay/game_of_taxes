@@ -372,7 +372,7 @@ int Datastructures::total_net_tax(TownID /*id*/)
 
 void Datastructures::clear_roads()
 {
-    // Clears the roads_ and connected_towns_ -vectors of each town.
+    // Clears the roads_ and connected_towns_ -vectors of each town, aswell as all_roads_.
     std::for_each(all_town_data_.begin(),all_town_data_.end(),[] (auto& town) {town.second.roads_.clear();});
     std::for_each(all_town_data_.begin(),all_town_data_.end(),[] (auto& town) {town.second.connected_towns_.clear();});
     all_roads_.clear();
@@ -380,6 +380,7 @@ void Datastructures::clear_roads()
 
 std::vector<std::pair<TownID, TownID>> Datastructures::all_roads()
 {
+    // Simply returns pre-existing vector.
     return all_roads_;
 }
 
@@ -542,12 +543,12 @@ std::vector<TownID> Datastructures::least_towns_route(TownID fromid, TownID toid
     // Construct the return vector
     found_route.push_back(toid);
 
-    auto temp = end_town->second;
+    auto temp_town = end_town->second;
 
-    while(temp.search_parent != nullptr)
+    while(temp_town.search_parent != nullptr)
     {
-        found_route.push_back(temp.search_parent->town_id);
-        temp = *temp.search_parent;
+        found_route.push_back(temp_town.search_parent->town_id);
+        temp_town = *temp_town.search_parent;
     }
 
     // Reverse the vector to the proper order (start, ... , end)
