@@ -1,8 +1,8 @@
 // Datastructures.hh
 //
-// Student name:
-// Student email:
-// Student number:
+// Student name: Matias Aitolahti
+// Student email: matias.aitolahti@tuni.fi
+// Student number: H293115
 
 #ifndef DATASTRUCTURES_HH
 #define DATASTRUCTURES_HH
@@ -180,19 +180,19 @@ public:
 
     // Phase 2 operations
 
-    // Estimate of performance:
+    // Estimate of performance: O(n²)
     // Short rationale for estimate:
     void clear_roads();
 
-    // Estimate of performance:
+    // Estimate of performance: O(n²)
     // Short rationale for estimate:
     std::vector<std::pair<TownID, TownID>> all_roads();
 
-    // Estimate of performance:
+    // Estimate of performance: O(n)
     // Short rationale for estimate:
     bool add_road(TownID town1, TownID town2);
 
-    // Estimate of performance:
+    // Estimate of performance: O(n)
     // Short rationale for estimate:
     std::vector<TownID> get_roads_from(TownID id);
 
@@ -223,7 +223,36 @@ public:
     Distance trim_road_network();
 
 private:
-    // Add stuff needed for your class implementation here
+
+    enum Color {white, grey, black};
+
+    // Struct that contains all data for a single town
+    struct town_data {
+        TownID town_id;
+        Name name;
+        Coord coord;
+        int tax;
+        town_data *master_ = nullptr;
+        std::vector<town_data*> vassals_ = {};
+
+        std::vector<TownID> connected_towns_;
+        std::vector<std::pair<town_data*,int>> roads_;
+        town_data* search_parent = nullptr;
+        Color search_color = white;
+        int search_distance = 0;
+
+
+    } ;
+
+    const Coord origin_ = {0,0};
+
+    std::unordered_map<TownID, town_data> all_town_data_;
+
+    std::vector<std::pair<TownID,TownID>> all_roads_;
+
+    // Estimate of performance: O(1), theta(1)
+    // Short rationale for estimate: A simple calculation
+    int distance_from_coord(Coord coord1, Coord coord2);
 
 };
 
