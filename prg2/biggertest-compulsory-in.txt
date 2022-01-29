@@ -1,0 +1,9 @@
+# Bigger test of compulsory operations
+clear_all
+town_count
+read "towns-data.txt" silent
+roads_from Hto
+# Find some paths
+any_route Smo Uki
+any_route Nnl Kli
+any_route Hki Uki

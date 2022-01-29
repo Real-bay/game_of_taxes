@@ -1,0 +1,6 @@
+# Read performance tests of all operations
+read "perftest-compulsory.txt"
+read "perftest-towns_nearest.txt"
+read "perftest-longest_vassal_path.txt"
+read "perftest-total_net_tax.txt"
+read "perftest-remove.txt"

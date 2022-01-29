@@ -1,0 +1,29 @@
+# raakile/skeleton tests
+clear_all
+town_count
+all_roads
+add_town x1 First (1,1) 11
+add_town x2 Second (2,2) 22
+add_town x3 Third (3,3) 33
+town_count
+all_roads
+add_road x1 x2
+all_roads
+roads_from x1
+roads_from x2
+roads_from x3
+add_road x1 x3
+all_roads
+roads_from x1
+roads_from x2
+roads_from x3
+add_road x3 x2
+all_roads
+roads_from x1
+roads_from x2
+roads_from x3
+clear_roads
+all_roads
+roads_from x1
+roads_from x2
+roads_from x3

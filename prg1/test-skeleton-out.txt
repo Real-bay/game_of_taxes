@@ -1,0 +1,61 @@
+> # raakile/skeleton tests
+> clear_all
+Cleared all towns
+> town_count
+Number of towns: 0
+> all_towns
+No towns!
+> add_town x1 First (1,1) 11
+First: tax=11, pos=(1,1), id=x1
+> all_towns
+First: tax=11, pos=(1,1), id=x1
+> town_count
+Number of towns: 1
+> clear_all
+Cleared all towns
+> add_town x1 First (1,1) 11
+First: tax=11, pos=(1,1), id=x1
+> town_count
+Number of towns: 1
+> add_town x2 Second (2,2) 22
+Second: tax=22, pos=(2,2), id=x2
+> town_count
+Number of towns: 2
+> add_town x3 Third (3,3) 33
+Third: tax=33, pos=(3,3), id=x3
+> town_count
+Number of towns: 3
+> all_towns
+1. First: tax=11, pos=(1,1), id=x1
+2. Second: tax=22, pos=(2,2), id=x2
+3. Third: tax=33, pos=(3,3), id=x3
+> add_vassalship x1 x3
+Added vassalship: First -> Third
+> all_towns
+1. First: tax=11, pos=(1,1), id=x1
+2. Second: tax=22, pos=(2,2), id=x2
+3. Third: tax=33, pos=(3,3), id=x3
+> town_vassals x1
+No towns!
+> town_vassals x3
+First: tax=11, pos=(1,1), id=x1
+> town_vassals x99
+Failed (NO_... returned)!!
+> add_vassalship x2 x3
+Added vassalship: Second -> Third
+> all_towns
+1. First: tax=11, pos=(1,1), id=x1
+2. Second: tax=22, pos=(2,2), id=x2
+3. Third: tax=33, pos=(3,3), id=x3
+> town_vassals x1
+No towns!
+> town_vassals x3
+1. First: tax=11, pos=(1,1), id=x1
+2. Second: tax=22, pos=(2,2), id=x2
+> town_vassals x99
+Failed (NO_... returned)!!
+> clear_all
+Cleared all towns
+> all_towns
+No towns!
+> 

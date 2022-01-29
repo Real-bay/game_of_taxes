@@ -1,0 +1,11 @@
+# Bigger test of shortest_route
+clear_all
+town_count
+read "towns-data.txt" silent
+all_roads
+shortest_route Tpe Uki
+# Add roads that create a shorter route with more towns
+add_road Hmi Smo
+shortest_route Tpe Uki
+add_road Mka Ilm
+shortest_route Tpe Uki

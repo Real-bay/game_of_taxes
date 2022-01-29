@@ -1,0 +1,20 @@
+# Simple test of trim_road_network
+clear_all
+town_count
+all_roads
+# Add two towns and two crossroad
+add_town t1 One (0,0) 0
+add_town x1 xx (0,3) 3
+add_town t2 Two (2,2) 5
+add_town x2 xy (4,0) 3
+# Add six roads
+add_road t1 x1
+add_road x1 t2
+add_road x2 t1
+add_road t1 t2
+add_road x2 t2
+add_road x1 x2
+all_roads
+# Trim road network and print out remaining roads
+trim_road_network
+all_roads

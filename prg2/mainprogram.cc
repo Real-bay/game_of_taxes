@@ -138,18 +138,6 @@ MainProgram::CmdResult MainProgram::cmd_add_town(ostream& /*output*/, MatchIter 
     string taxstr = *begin++;
     assert( begin == end && "Impossible number of parameters!");
 
-//    string heightstr = *begin++;
-//    assert( begin == end && "Impossible number of parameters!");
-//    int height;
-//    if (!heightstr.empty())
-//    {
-//        height = convert_string_to<int>(heightstr);
-//    }
-//    else
-//    {
-//        height = -1; // REPLACE WITH HEIGTH FROM MAP!
-//    }
-
     int x = convert_string_to<int>(xstr);
     int y = convert_string_to<int>(ystr);
     int tax = convert_string_to<int>(taxstr);
@@ -219,6 +207,61 @@ MainProgram::CmdResult MainProgram::cmd_add_vassalship(std::ostream& output, Mai
 
     view_dirty = true;
     return {};
+}
+
+MainProgram::CmdResult MainProgram::cmd_add_road(std::ostream& output, MainProgram::MatchIter begin, MainProgram::MatchIter end)
+{
+    TownID town1id = *begin++;
+    TownID town2id = *begin++;
+    assert( begin == end && "Impossible number of parameters!");
+
+    bool ok = ds_.add_road(town1id, town2id);
+    if (ok)
+    {
+        auto town1name = ds_.get_town_name(town1id);
+        auto town2name = ds_.get_town_name(town2id);
+        output << "Added road: " << (town1name.empty() ? "*" : town1name) << " <-> " << (town2name.empty() ? "*" : town2name) << endl;
+    }
+    else
+    {
+        output << "Adding road failed!" << endl;
+    }
+
+    view_dirty = true;
+//    return {ResultType::PATH, {town1id, town2id}};
+    return {};
+}
+
+MainProgram::CmdResult MainProgram::cmd_remove_road(std::ostream& output, MainProgram::MatchIter begin, MainProgram::MatchIter end)
+{
+    TownID town1id = *begin++;
+    TownID town2id = *begin++;
+    assert( begin == end && "Impossible number of parameters!");
+
+    bool ok = ds_.remove_road(town1id, town2id);
+    if (ok)
+    {
+        auto town1name = ds_.get_town_name(town1id);
+        auto town2name = ds_.get_town_name(town2id);
+        output << "Removed road: " << (town1name.empty() ? "*" : town1name) << " <-> " << (town2name.empty() ? "*" : town2name) << endl;
+    }
+    else
+    {
+        output << "Removing road failed!" << endl;
+    }
+
+    view_dirty = true;
+    return {};
+}
+
+void MainProgram::test_remove_road()
+{
+    if (random_towns_added_ > 0) // Don't do anything if there's no towns
+    {
+        auto id1 = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
+        auto id2 = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
+        ds_.remove_road(id1, id2);
+    }
 }
 
 MainProgram::CmdResult MainProgram::cmd_taxer_path(std::ostream& /*output*/, MainProgram::MatchIter begin, MainProgram::MatchIter end)
@@ -443,6 +486,36 @@ void MainProgram::test_all_towns()
     ds_.all_towns();
 }
 
+MainProgram::CmdResult MainProgram::cmd_all_roads(std::ostream& output, MainProgram::MatchIter begin, MainProgram::MatchIter end)
+{
+    assert( begin == end && "Impossible number of parameters!");
+
+    auto roads = ds_.all_roads();
+    if (roads.empty())
+    {
+        output << "No roads!" << endl;
+    }
+
+    std::sort(roads.begin(), roads.end());
+
+    unsigned long int n = 1;
+    for (auto const& p : roads)
+    {
+        auto coord1 = ds_.get_town_coordinates(p.first);
+        auto coord2 = ds_.get_town_coordinates(p.second);
+        auto dist = calc_distance(coord1, coord2);
+        output << n << ": " << p.first << " <-> " << p.second << " (" << dist << ")" << std::endl;
+        ++n;
+    }
+
+    return {};
+}
+
+void MainProgram::test_all_roads()
+{
+    ds_.all_roads();
+}
+
 MainProgram::CmdResult MainProgram::cmd_town_vassals(std::ostream& output, MainProgram::MatchIter begin, MainProgram::MatchIter end)
 {
     string id = *begin++;
@@ -466,6 +539,99 @@ void MainProgram::test_town_vassals()
         auto id = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
         ds_.get_town_vassals(id);
     }
+}
+
+MainProgram::CmdResult MainProgram::cmd_roads_from(std::ostream& output, MainProgram::MatchIter begin, MainProgram::MatchIter end)
+{
+    string id = *begin++;
+    assert( begin == end && "Impossible number of parameters!");
+
+    auto vassals = ds_.get_roads_from(id);
+    if (vassals.empty())
+    {
+        output << "No roads!" << endl;
+    }
+
+    std::sort(vassals.begin(), vassals.end());
+
+    return {ResultType::LIST, vassals};
+}
+
+void MainProgram::test_roads_from()
+{
+    if (random_towns_added_ > 0) // Don't do anything if there's no towns
+    {
+        auto id = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
+        ds_.get_roads_from(id);
+    }
+}
+
+MainProgram::CmdResult MainProgram::cmd_random_roads(std::ostream& output, MainProgram::MatchIter begin, MainProgram::MatchIter end)
+{
+    string sizestr = *begin++;
+    assert( begin == end && "Impossible number of parameters!");
+
+    if (ds_.town_count() < 2)
+    {
+        output << "Not enough towns to add roads!" << std::endl;
+        return {};
+    }
+
+    unsigned int random_roads = convert_string_to<unsigned int>(sizestr);
+
+    add_random_nonintersecting_roads(random_roads);
+
+    output << "Added random " << random_roads << " roads." << endl;
+
+    view_dirty = true;
+
+    return {};
+}
+
+void MainProgram::test_random_roads()
+{
+    if (random_towns_added_ > 0) // Don't do anything if there's no towns
+    {
+        add_random_roads(10);
+    }
+}
+
+void MainProgram::add_random_roads(unsigned int n)
+{
+    for (unsigned int i=0; i<n; ++i)
+    {
+        auto id1 = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
+        auto id2 = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
+        ds_.add_road(id1, id2);
+    }
+}
+
+Distance MainProgram::calc_distance(Coord c1, Coord c2)
+{
+    if (c1 == NO_COORD || c2 == NO_COORD) { return NO_DISTANCE; }
+
+    long long int deltax = c1.x - c2.x;
+    long long int deltay = c1.y - c2.y;
+    return static_cast<Distance>(std::sqrt(deltax*deltax + deltay*deltay));
+}
+
+MainProgram::CmdResult MainProgram::cmd_random_road_network(std::ostream& output, MainProgram::MatchIter begin, MainProgram::MatchIter end)
+{
+    assert( begin == end && "Impossible number of parameters!");
+
+    if (ds_.town_count() < 2)
+    {
+        output << "Not enough towns to add roads!" << std::endl;
+        return {};
+    }
+
+    create_road_network();
+
+    output << "Added road network." << endl;
+
+    view_dirty = true;
+
+    return {};
 }
 
 //void MainProgram::test_vassals()
@@ -567,6 +733,172 @@ void MainProgram::test_find_towns()
         auto name = n_to_name(random<decltype(random_towns_added_)>(0, random_towns_added_));
         ds_.find_towns(name);
     }
+}
+
+MainProgram::CmdResult MainProgram::cmd_any_route(std::ostream& output, MainProgram::MatchIter begin, MainProgram::MatchIter end)
+{
+    string fromid = *begin++;
+    string toid = *begin++;
+    assert( begin == end && "Impossible number of parameters!");
+
+    auto result = ds_.any_route(fromid, toid);
+    if (result.empty())
+    {
+        output << "No route found." << std::endl;
+        return {};
+    }
+
+    return {ResultType::ROUTE, result};
+}
+
+void MainProgram::test_any_route()
+{
+    if (random_towns_added_ > 0)
+    {
+        // Choose two random towns
+        auto id1 = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
+        auto id2 = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
+        ds_.any_route(id1, id2);
+    }
+}
+
+MainProgram::CmdResult MainProgram::cmd_shortest_route(ostream& output, MatchIter begin, MatchIter end)
+{
+    string fromid = *begin++;
+    string toid = *begin++;
+    assert( begin == end && "Impossible number of parameters!");
+
+    auto result = ds_.shortest_route(fromid, toid);
+    if (result.empty())
+    {
+        output << "No route found." << std::endl;
+        return {};
+    }
+
+    return {ResultType::ROUTE, result};
+}
+
+void MainProgram::test_shortest_route()
+{
+    if (random_towns_added_ > 0)
+    {
+        // Choose two random towns
+        auto id1 = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
+        auto id2 = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
+        ds_.shortest_route(id1, id2);
+    }
+}
+
+MainProgram::CmdResult MainProgram::cmd_least_towns_route(std::ostream& output, MainProgram::MatchIter begin, MainProgram::MatchIter end)
+{
+    string fromid = *begin++;
+    string toid = *begin++;
+    assert( begin == end && "Impossible number of parameters!");
+
+    auto result = ds_.least_towns_route(fromid, toid);
+    if (result.empty())
+    {
+        output << "No route found." << std::endl;
+        return {};
+    }
+
+    return {ResultType::ROUTE, result};
+}
+
+void MainProgram::test_least_towns_route()
+{
+    if (random_towns_added_ > 0)
+    {
+        // Choose two random towns
+        auto id1 = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
+        auto id2 = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
+        ds_.least_towns_route(id1, id2);
+    }
+}
+
+MainProgram::CmdResult MainProgram::cmd_road_cycle_route(std::ostream& output, MainProgram::MatchIter begin, MainProgram::MatchIter end)
+{
+    string fromid = *begin++;
+    assert( begin == end && "Impossible number of parameters!");
+
+    auto result = ds_.road_cycle_route(fromid);
+    if (result.empty())
+    {
+        output << "No route found." << std::endl;
+        return {};
+    }
+
+    if (result.front() == NO_TOWNID)
+    {
+        output << "Town not found!" << endl;
+        return {};
+    }
+
+    if (result.size() < 2)
+    {
+        output << "Too short route (" << result.size() << ") to contain cycles!" << endl;
+        return {ResultType::ROUTE, result};
+    }
+
+    auto lasttown = result.back();
+    auto cycbeg = std::find_if(result.begin(), result.end()-1, [lasttown](auto const& id){ return id == lasttown; });
+    if (cycbeg == result.end()-1)
+    {
+        output << "No cycle found in returned route!";
+        return {ResultType::ROUTE, result};
+    }
+
+    // If necessary, swap cycle so that it starts with smaller townid
+    if ((cycbeg+1) < (result.end()-2))
+    {
+        auto idfirst = *cycbeg;
+        auto idlast = *(result.end()-2);
+        if (idlast < idfirst)
+        {
+           std::reverse(cycbeg+1, result.end()-1);
+        }
+    }
+
+    return {ResultType::ROUTE, result};
+}
+
+void MainProgram::test_road_cycle_route()
+{
+    if (random_towns_added_ > 0)
+    {
+        // Choose random town
+        auto id = n_to_townid(random<decltype(random_towns_added_)>(0, random_towns_added_));
+        ds_.road_cycle_route(id);
+    }
+}
+
+MainProgram::CmdResult MainProgram::cmd_trim_road_network(std::ostream& output, MainProgram::MatchIter begin, MainProgram::MatchIter end)
+{
+    assert( begin == end && "Impossible number of parameters!");
+
+    Distance total_dist;
+    total_dist = ds_.trim_road_network();
+
+    output << "The remaining road network has total distance of " << total_dist << std::endl;
+
+    view_dirty = true;
+
+    return {};
+}
+
+MainProgram::CmdResult MainProgram::cmd_clear_roads(std::ostream& output, MainProgram::MatchIter begin, MainProgram::MatchIter end)
+{
+    assert( begin == end && "Impossible number of parameters!");
+
+    ds_.clear_roads();
+    output << "All roads removed." << std::endl;
+
+    return {};
+}
+
+void MainProgram::test_trim_road_network()
+{
+    ds_.trim_road_network();
 }
 
 MainProgram::CmdResult MainProgram::cmd_randseed(std::ostream& output, MatchIter begin, MatchIter end)
@@ -825,8 +1157,12 @@ vector<MainProgram::CmdInfo> MainProgram::cmds_ =
     {"add_town", "ID Name (x,y) tax", townidx+wsx+namex+wsx+coordx+wsx+numx, &MainProgram::cmd_add_town, nullptr },
     {"random_add", "number_of_towns_to_add  (minx,miny) (maxx,maxy) (coordinates optional)",
      numx+"(?:"+wsx+coordx+wsx+coordx+")?", &MainProgram::cmd_random_add, &MainProgram::test_random_add },
+    {"random_roads", "max_number_of_roads_to_add", numx,
+     &MainProgram::cmd_random_roads, &MainProgram::test_random_roads },
+    {"random_road_network", "", "", &MainProgram::cmd_random_road_network, nullptr },
     {"print_town", "TownID", townidx, &MainProgram::cmd_print_town, &MainProgram::test_print_town },
     {"all_towns", "", "", &MainProgram::cmd_all_towns, &MainProgram::test_all_towns },
+    {"all_roads", "", "", &MainProgram::cmd_all_roads, &MainProgram::test_all_roads },
     {"town_count", "", "", &MainProgram::cmd_town_count, nullptr },
     {"clear_all", "", "", &MainProgram::cmd_clear_all, nullptr },
     {"towns_alphabetically", "", "", &MainProgram::NoParListCmd<&Datastructures::towns_alphabetically>, &MainProgram::NoParListTestCmd<&Datastructures::towns_alphabetically> },
@@ -840,9 +1176,18 @@ vector<MainProgram::CmdInfo> MainProgram::cmds_ =
     {"change_town_name", "ID newname", townidx+wsx+namex, &MainProgram::cmd_change_town_name, &MainProgram::test_change_town_name },
     {"add_vassalship", "VassalID TaxerID", townidx+wsx+townidx, &MainProgram::cmd_add_vassalship, nullptr },
     {"town_vassals", "TownID", townidx, &MainProgram::cmd_town_vassals, &MainProgram::test_town_vassals },
+    {"add_road", "Town1ID Town2ID", townidx+wsx+townidx, &MainProgram::cmd_add_road, nullptr },
+    {"remove_road", "Town1ID Town2ID", townidx+wsx+townidx, &MainProgram::cmd_remove_road, &MainProgram::test_remove_road },
+    {"roads_from", "TownID", townidx, &MainProgram::cmd_roads_from, &MainProgram::test_roads_from },
+    {"clear_roads", "", "", &MainProgram::cmd_clear_roads, nullptr },
     {"taxer_path", "ID", townidx, &MainProgram::cmd_taxer_path, &MainProgram::test_taxer_path },
     {"longest_vassal_path", "ID", townidx, &MainProgram::cmd_longest_vassal_path, &MainProgram::test_longest_vassal_path },
     {"total_net_tax", "ID", townidx, &MainProgram::cmd_total_net_tax, &MainProgram::test_total_net_tax },
+    {"any_route", "Town1ID Town2ID", townidx+wsx+townidx, &MainProgram::cmd_any_route, &MainProgram::test_any_route },
+    {"shortest_route", "Town1ID Town2ID", townidx+wsx+townidx, &MainProgram::cmd_shortest_route, &MainProgram::test_shortest_route },
+    {"least_towns_route", "Town1ID Town2ID", townidx+wsx+townidx, &MainProgram::cmd_least_towns_route, &MainProgram::test_least_towns_route },
+    {"road_cycle_route", "TownID", townidx, &MainProgram::cmd_road_cycle_route, &MainProgram::test_road_cycle_route },
+    {"trim_road_network", "", "", &MainProgram::cmd_trim_road_network, &MainProgram::test_trim_road_network },
     {"quit", "", "", nullptr, nullptr },
     {"help", "", "", &MainProgram::help_command, nullptr },
     {"read", "\"in-filename\" [silent]", "\"([-a-zA-Z0-9 ./:_]+)\"(?:"+wsx+"(silent))?", &MainProgram::cmd_read, nullptr },
@@ -880,7 +1225,6 @@ MainProgram::CmdResult MainProgram::cmd_perftest(std::ostream& output, MatchIter
     string commandstr = *begin++;
     unsigned int timeout = convert_string_to<unsigned int>(*begin++);
     unsigned int repeat_count = convert_string_to<unsigned int>(*begin++);
-//    unsigned int friend_count = convert_string_to<unsigned int>(*begin++);
     string sizes = *begin++;
     assert(begin == end && "Invalid number of parameters");
 
@@ -908,7 +1252,6 @@ MainProgram::CmdResult MainProgram::cmd_perftest(std::ostream& output, MatchIter
     }
 
     output << "Timeout for each N is " << timeout << " sec. " << endl;
-//    output << "Add 0.." << friend_count << " friends for every employee." << endl;
     output << "For each N perform " << repeat_count << " random command(s) from:" << endl;
 
     // Initialize test functions
@@ -969,11 +1312,12 @@ MainProgram::CmdResult MainProgram::cmd_perftest(std::ostream& output, MatchIter
         output << setw(7) << n << " , " << flush;
 
         ds_.clear_all();
+        ds_.clear_roads();
         init_primes();
 
         Stopwatch stopwatch(true); // Use also instruction counting, if enabled
 
-        // Add random places
+        // Add random towns
         for (unsigned int i = 0; i < n / 1000; ++i)
         {
             stopwatch.start();
@@ -1002,11 +1346,11 @@ MainProgram::CmdResult MainProgram::cmd_perftest(std::ostream& output, MatchIter
             stopwatch.stop();
         }
 
-        // Add random ways
+        // Add random roads
         for (unsigned int i = 0; i < n / 1000; ++i)
         {
             stopwatch.start();
-//            add_random_ways(1000);  !!!!!!!!!!!!!!
+            add_random_roads(1000);
             stopwatch.stop();
 
             if (stopwatch.elapsed() >= timeout)
@@ -1027,7 +1371,7 @@ MainProgram::CmdResult MainProgram::cmd_perftest(std::ostream& output, MatchIter
         if (n % 1000 != 0)
         {
             stopwatch.start();
-//            add_random_ways(n % 1000); !!!!!!!!!!!!!!!
+            add_random_roads(n % 1000);
             stopwatch.stop();
         }
 
@@ -1064,12 +1408,6 @@ MainProgram::CmdResult MainProgram::cmd_perftest(std::ostream& output, MatchIter
                     ds_.get_town_coordinates(id);
                     ds_.get_town_tax(id);
                 }
-                // !!!!!!!!!!!!!!!!
-//                if (random_areas_added_ > 0)
-//                {
-//                    auto areaid = n_to_areaid(random<decltype(random_areas_added_)>(0, random_areas_added_));
-//                    ds_.get_area_name(areaid);
-//                }
             }
 
             if (repeat % 10 == 0)
@@ -1117,6 +1455,7 @@ MainProgram::CmdResult MainProgram::cmd_perftest(std::ostream& output, MatchIter
     }
 
     ds_.clear_all();
+    ds_.clear_roads();
     init_primes();
 
     }
@@ -1254,7 +1593,7 @@ bool MainProgram::command_parse_line(string inputline, ostream& output)
                         }
                         break;
                     }
-                case ResultType::PATH:
+                case ResultType::ROUTE:
                     {
                         auto& route = result.second;
                         if (!route.empty())
@@ -1266,42 +1605,37 @@ bool MainProgram::command_parse_line(string inputline, ostream& output)
                             else
                             {
                                 unsigned int num = 1;
+                                Distance dist = 0;
+                                Coord prev_coord = NO_COORD;
                                 for (auto townid : route)
                                 {
                                     output << num << ". ";
-                                    ++num;
                                     print_town_name(townid, output, false);
+
+                                    Coord coord = ds_.get_town_coordinates(townid);
+                                    if (num != 1)
+                                    {
+                                        Distance d = calc_distance(prev_coord, coord);
+                                        if (d != NO_DISTANCE && dist != NO_DISTANCE)
+                                        {
+                                            dist += d;
+                                            output << " (distance " << dist << ")";
+                                        }
+                                        else
+                                        {
+                                            output << " (NO_DISTANCE!)";
+                                            dist = NO_DISTANCE;
+                                        }
+                                    }
+                                    prev_coord = coord;
                                     output << endl;
+
+                                    ++num;
                                 }
                             }
                         }
                         break;
                     }
-//                case ResultType::WAYS:
-//                {
-//                    auto& ways = std::get<CmdResultRoute>(result.second);
-//                    if (!ways.empty())
-//                    {
-//                        if (ways.size() == 1 && get<0>(ways.front()) == NO_COORD)
-//                        {
-//                            output << "Failed (NO_... returned)!!" << std::endl;
-//                        }
-//                        else
-//                        {
-//                            unsigned int num = 1;
-//                            for (auto& [fromcoord, tocoord, wayid, distance] : ways)
-//                            {
-//                                output << num << ". ";
-//                                ++num;
-//                                print_coord(tocoord, output, false);
-//                                if (wayid != NO_WAY) { output << " way " << wayid << " "; }
-//                                if (distance != NO_DISTANCE) { output << "distance " << distance; }
-//                                output << endl;
-//                            }
-//                        }
-//                    }
-//                    break;
-//                }
                     default:
                     {
                         assert(false && "Unsupported result type!");
@@ -1517,4 +1851,146 @@ void MainProgram::init_regexs()
     times_regex_ = regex(wsx+"([0-9][0-9]):([0-9][0-9]):([0-9][0-9])", std::regex_constants::ECMAScript | std::regex_constants::optimize);
     commands_regex_ = regex("([0-9a-zA-Z_]+);?", std::regex_constants::ECMAScript | std::regex_constants::optimize);
     sizes_regex_ = regex(numx+";?", std::regex_constants::ECMAScript | std::regex_constants::optimize);
+}
+
+void MainProgram::create_road_network()
+{
+    vector<pair<Coord, Coord>> addedroads;
+    auto towns = ds_.all_towns();
+    sort(towns.begin(), towns.end()); // Sort town IDs to get deterministic results
+
+    // Add random road network
+    using townssize = decltype(towns)::size_type;
+    set<tuple<Distance, townssize, townssize>> roads;
+    using roadssize = decltype(roads)::size_type;
+    for (auto i1 = towns.size(); i1 != 0; --i1)
+    {
+        for (auto i2 = i1-1; i2 != 0; --i2)
+        {
+            Coord p1 = ds_.get_town_coordinates(towns[i1-1]);
+            Coord p2 = ds_.get_town_coordinates(towns[i2-1]);
+            Distance dist = abs(p1.x-p2.x)+abs(p1.y-p2.y);
+            roads.emplace(dist, i1-1, i2-1);
+        }
+    }
+//    shuffle(roads.begin(), roads.end(), rand_engine_);
+//    sort(roads.begin(), roads.end(), [](auto l, auto r){ return get<2>(l) < get<2>(r); });
+    vector<long int> tset(towns.size(), -1);
+    while (!roads.empty())
+    {
+//        auto roadi = next(roads.begin(), random<roadssize>(0, min(static_cast<roadssize>(20), roads.size())));
+//        auto roadi = roads.begin();
+        auto roadi = next(roads.begin(), random<roadssize>(0, roads.size()/3));
+        auto road = *roadi;
+        roads.erase(roadi);
+        auto i1 = get<1>(road);
+        auto i2 = get<2>(road);
+        if (i1 == i2) { continue; }
+        auto s1 = i1;
+        while (tset[s1] >= 0) { s1 = tset[s1]; }
+        auto s2 = i2;
+        while (tset[s2] >= 0) { s2 = tset[s2]; }
+        if (s1 == s2) { continue; }
+        Coord p1 = ds_.get_town_coordinates(towns[i1]);
+        Coord p2 = ds_.get_town_coordinates(towns[i2]);
+        bool intersects = false;
+        for (auto const& road : addedroads)
+        {
+            if (doIntersect(p1, p2, road.first, road.second)) { intersects = true; break; }
+        }
+        if (intersects) { continue; }
+        tset[s2] += tset[s1];
+        tset[s1] = s2;
+        ds_.add_road(towns[i1], towns[i2]);
+        addedroads.push_back({p1, p2});
+        if (tset[s2] == -static_cast<long int>(towns.size())) { break; }
+    }
+}
+
+void MainProgram::add_random_nonintersecting_roads(unsigned int random_roads)
+{
+    vector<pair<Coord, Coord>> addedroads;
+    auto towns = ds_.all_towns();
+    sort(towns.begin(), towns.end()); // Sort town IDs to get deterministic results
+
+    // Add given number of totally random roads
+    for ( ; random_roads != 0; --random_roads)
+    {
+        auto i1 = random(towns.begin(), towns.end());
+        auto i2 = random(towns.begin(), towns.end());
+        if (i1 != i2)
+        {
+            Coord p1 = ds_.get_town_coordinates(*i1);
+            Coord p2 = ds_.get_town_coordinates(*i2);
+            bool intersects = false;
+            for (auto const& road : addedroads)
+            {
+                if (doIntersect(p1, p2, road.first, road.second)) { intersects = true; break; }
+            }
+            if (intersects) { continue; }
+            ds_.add_road(*i1, *i2);
+            addedroads.push_back({p1, p2});
+        }
+    }
+}
+
+// The functions below are taken and modified from https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
+// point q lies on line segment 'pr'
+bool MainProgram::onSegment(Coord p, Coord q, Coord r)
+{
+    if (q.x <= max(p.x, r.x) && q.x >= min(p.x, r.x) &&
+        q.y <= max(p.y, r.y) && q.y >= min(p.y, r.y))
+       return true;
+
+    return false;
+}
+
+// To find orientation of ordered triplet (p, q, r).
+// The function returns following values
+// 0 --> p, q and r are colinear
+// 1 --> Clockwise
+// 2 --> Counterclockwise
+int MainProgram::orientation(Coord p, Coord q, Coord r)
+{
+    // See https://www.geeksforgeeks.org/orientation-3-ordered-points/
+    // for details of below formula.
+    int val = (q.y - p.y) * (r.x - q.x) -
+              (q.x - p.x) * (r.y - q.y);
+
+    if (val == 0) return 0;  // colinear
+
+    return (val > 0)? 1: 2; // clock or counterclock wise
+}
+
+// The main function that returns true if line segment 'p1q1'
+// and 'p2q2' intersect.
+bool MainProgram::doIntersect(Coord p1, Coord q1, Coord p2, Coord q2)
+{
+    if ((p1 == p2 && q1 == q2) || (p1 == q2 && q1 == p2)) { return true; } // Same line
+    if (p1 == p2 || p1 == q2 || q1 == p2 || q1 == q2) { return false; } // One same point, cannot intersect
+    // Find the four orientations needed for general and
+    // special cases
+    int o1 = orientation(p1, q1, p2);
+    int o2 = orientation(p1, q1, q2);
+    int o3 = orientation(p2, q2, p1);
+    int o4 = orientation(p2, q2, q1);
+
+    // General case
+    if (o1 != o2 && o3 != o4)
+        return true;
+
+    // Special Cases
+    // p1, q1 and p2 are colinear and p2 lies on segment p1q1
+    if (o1 == 0 && onSegment(p1, p2, q1)) return true;
+
+    // p1, q1 and q2 are colinear and q2 lies on segment p1q1
+    if (o2 == 0 && onSegment(p1, q2, q1)) return true;
+
+    // p2, q2 and p1 are colinear and p1 lies on segment p2q2
+    if (o3 == 0 && onSegment(p2, p1, q2)) return true;
+
+     // p2, q2 and q1 are colinear and q1 lies on segment p2q2
+    if (o4 == 0 && onSegment(p2, q1, q2)) return true;
+
+    return false; // Doesn't fall in any of the above cases
 }

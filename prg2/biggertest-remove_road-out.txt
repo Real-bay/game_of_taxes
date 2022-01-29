@@ -1,0 +1,33 @@
+> # Bigger test of remove_road
+> clear_all
+Cleared all towns
+> town_count
+Number of towns: 0
+> read "towns-data.txt" silent
+** Commands from 'towns-data.txt'
+...(output discarded in silent mode)...
+** End of commands from 'towns-data.txt'
+> roads_from Rma
+1. Maarianhamina: tax=11658, pos=(0,10), id=Mhn
+2. Naantali: tax=19124, pos=(20,20), id=Nnl
+3. Salo: tax=53188, pos=(30,30), id=Slo
+> roads_from Uki
+Rovaniemi: tax=62037, pos=(60,150), id=Roi
+> # Remove roads
+> remove_road Rma Slo
+Removed road: Rauma <-> Salo
+> remove_road Uki Roi
+Removed road: Utsjoki <-> Rovaniemi
+> roads_from Rma
+1. Maarianhamina: tax=11658, pos=(0,10), id=Mhn
+2. Naantali: tax=19124, pos=(20,20), id=Nnl
+> roads_from Uki
+No roads!
+> # Add one back
+> add_road Slo Rma
+Added road: Salo <-> Rauma
+> roads_from Rma
+1. Maarianhamina: tax=11658, pos=(0,10), id=Mhn
+2. Naantali: tax=19124, pos=(20,20), id=Nnl
+3. Salo: tax=53188, pos=(30,30), id=Slo
+> 

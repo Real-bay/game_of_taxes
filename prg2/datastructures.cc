@@ -12,6 +12,7 @@
 
 #include <map>
 
+#include <list>
 
 std::minstd_rand rand_engine; // Reasonably quick pseudo-random generator
 
@@ -34,8 +35,6 @@ Type random_in_range(Type start, Type end)
 Datastructures::Datastructures()
 {
     // Write any initialization you need here
-
-
 }
 
 Datastructures::~Datastructures()
@@ -363,6 +362,219 @@ int Datastructures::total_net_tax(TownID /*id*/)
     // Replace the line below with your implementation
     // Also uncomment parameters ( /* param */ -> param )
     throw NotImplemented("total_net_tax()");
+}
+
+
+//
+// Phase 2 operations
+//
+
+
+void Datastructures::clear_roads()
+{
+    // Clears the roads_ and connected_towns_ -vectors of each town, aswell as all_roads_.
+    std::for_each(all_town_data_.begin(),all_town_data_.end(),[] (auto& town) {town.second.roads_.clear();});
+    std::for_each(all_town_data_.begin(),all_town_data_.end(),[] (auto& town) {town.second.connected_towns_.clear();});
+    all_roads_.clear();
+}
+
+std::vector<std::pair<TownID, TownID>> Datastructures::all_roads()
+{
+    // Simply returns pre-existing vector.
+    return all_roads_;
+}
+
+bool Datastructures::add_road(TownID town1, TownID town2)
+{
+    auto town_1 = all_town_data_.find(town1);
+    auto town_2 = all_town_data_.find(town2);
+    auto dist = distance_from_coord(town_1->second.coord,town_2->second.coord);
+
+    // Check that the towns exist and they are distinct
+    if (town_1 == all_town_data_.end()
+            || town_2 == all_town_data_.end()
+            || town1 == town2)
+    {
+        return false;
+    }
+
+    // Check that there is no road between the towns yet
+    if (std::find(town_1->second.connected_towns_.begin(),town_1->second.connected_towns_.end(), town2)
+            != town_1->second.connected_towns_.end())
+    {
+        return false;
+    }
+
+
+    // Add the road to all_roads_
+    if(town_1->first < town_2->first)
+    {
+        all_roads_.push_back(std::make_pair(town_1->first,town_2->first));
+    } else {
+        all_roads_.push_back(std::make_pair(town_2->first,town_1->first));
+    }
+
+
+    // Add the road to both towns' connected_towns_
+    town_1->second.connected_towns_.push_back(town2);
+    town_2->second.connected_towns_.push_back(town1);
+
+    // Create pointers to the towns' data structs
+    auto town1_data = &town_1->second;
+    auto town2_data = &town_2->second;
+
+    // Make pairs with those pointers and distances
+
+    auto town1_road = std::make_pair(town2_data, dist);
+    auto town2_road = std::make_pair(town1_data, dist);
+
+    // Finally, add the pairs to boths towns' roads_
+    town_1->second.roads_.push_back(town1_road);
+    town_2->second.roads_.push_back(town2_road);
+
+    return true;
+}
+
+std::vector<TownID> Datastructures::get_roads_from(TownID id)
+{
+    auto town = all_town_data_.find(id);
+
+    // Check that the town exists
+    // If no town is found, return a vector with just NO_TOWNID
+    if (town == all_town_data_.end())
+    {
+        std::vector<TownID> no_town;
+        no_town.push_back(NO_TOWNID);
+        return no_town;
+    }
+
+    // If the town is found, we can just return its corresponding connected_towns_
+    return town->second.connected_towns_;
+}
+
+std::vector<TownID> Datastructures::any_route(TownID fromid, TownID toid)
+{
+    // Uses least_towns_route to avoid copy-paste code
+    return least_towns_route(fromid,toid);
+}
+
+bool Datastructures::remove_road(TownID /*town1*/, TownID /*town2*/)
+{
+    // Replace the line below with your implementation
+    // Also uncomment parameters ( /* param */ -> param )
+    throw NotImplemented("remove_road()");
+}
+
+std::vector<TownID> Datastructures::least_towns_route(TownID fromid, TownID toid)
+{
+    auto start_town = all_town_data_.find(fromid);
+    auto end_town = all_town_data_.find(toid);
+    std::vector<TownID> found_route;
+
+    // Check that the towns exist
+    // If no towns are found, return a vector with just NO_TOWNID
+    if (start_town == all_town_data_.end() || end_town == all_town_data_.end())
+    {
+        found_route.push_back(NO_TOWNID);
+        return found_route;
+    }
+
+
+    // BFS
+
+
+    // Set up queue
+    std::list<town_data*> queue;
+
+    // Initialize all nodes
+    for (auto it : all_town_data_)
+    {
+        it.second.search_parent = nullptr;
+        it.second.search_color = white;
+        // "set to infinity"
+        it.second.search_distance = INT32_MAX;
+    }
+
+    // Start node to grey and add it to the queue
+    start_town->second.search_color = grey;
+    start_town->second.search_distance = 0;
+    auto *from_town = &start_town->second;
+    queue.push_back(from_town);
+
+    // While-loop until queue is empty
+    while (!queue.empty())
+    {
+        // Pop a node from the queue, u
+        auto u = queue.front();
+        queue.pop_front();
+
+        // For-loop to go through the neighboring nodes, v
+        for (auto v : u->roads_)
+        {
+            // If v is white, then
+            if (v.first->search_color == white)
+            {
+
+               // Set u as the parent of v
+                v.first->search_parent = u;
+
+                // Set v to grey
+                v.first->search_color = grey;
+
+                // Set v-distance to u-distance+1
+                v.first->search_distance = u->search_distance + 1;
+
+                // Push v to (the "end" of) the queue
+                queue.push_front(v.first);
+
+                // Break if the end of the route has been reached
+                if(v.first->town_id == toid) {
+                    break;
+                }
+            }
+
+            // Set u to black
+            u->search_color = black;
+
+        }
+
+    }
+
+    // Construct the return vector
+    found_route.push_back(toid);
+
+    auto temp_town = end_town->second;
+
+    while(temp_town.search_parent != nullptr)
+    {
+        found_route.push_back(temp_town.search_parent->town_id);
+        temp_town = *temp_town.search_parent;
+    }
+
+    // Reverse the vector to the proper order (start, ... , end)
+    std::reverse(found_route.begin(), found_route.end());
+
+    return found_route;
+}
+
+std::vector<TownID> Datastructures::road_cycle_route(TownID /*startid*/)
+{
+    // Replace the line below with your implementation
+    // Also uncomment parameters ( /* param */ -> param )
+    throw NotImplemented("road_cycle_route()");
+}
+
+std::vector<TownID> Datastructures::shortest_route(TownID /*fromid*/, TownID /*toid*/)
+{
+    // Replace the line below with your implementation
+    // Also uncomment parameters ( /* param */ -> param )
+    throw NotImplemented("shortest_route()");
+}
+
+Distance Datastructures::trim_road_network()
+{
+    // Replace the line below with your implementation
+    throw NotImplemented("trim_road_network()");
 }
 
 int Datastructures::distance_from_coord(Coord coord1, Coord coord2 )

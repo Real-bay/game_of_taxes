@@ -1,0 +1,70 @@
+COMP.CS.300 Harjoitustyo osa 1 - Game of Taxes README
+Matias Aitolahti
+matias.aitolahti@tuni.fi
+H293115
+
+General
+The purpose of this document is to describe and rationalize the design decisions and algorithm choices made for this project.
+(This readme is written in English for the sake of completeness)
+
+Data structure choices:
+The "main" database structure is an unordered map with TownID -strings as keys and town_data -structs as values. The primary reason for this choice was the fact that both adding new elements and looking up elements are both expected to be close to theta(1) in most cases. This is a key advantage over a regular map for example. Furthermore, the ability to search by ID rather than an index was also an obvious key factor.
+For storing the actual attributes of individual towns, the town_data -structs are used. These contain the required initial attributes (as dictated by the parameters of add_town() ), as well as pointers for defining the master-vassal-relations of towns.
+Temporary structures are used as needed, dictated by the function interfaces.
+
+
+
+Functions:
+town_count(): O(1), theta(1)
+Documentation states that the complexity of .size() is constant.
+clear_all(): O(n), theta(n)
+Documentation states that the complexity of .clear() is linear.
+
+add_town(): O(n)
+The complexity of .find() is expected to be linear at worst, as is indexing the data structure.
+
+get_town_name(): O(n)
+The complexity of .find() is expected to be linear at worst, as is indexing the data structure.
+
+get_town_coordinates(): O(n)
+The complexity of .find() is expected to be linear at worst, as is indexing the data structure.
+
+get_town_tax(): O(n)
+The complexity of .find() is expected to be linear at worst, as is indexing the data structure.
+
+all_towns(): O(n)
+The for-loop iterates through the entire data structure once.
+
+find_towns(): O(n)
+The for-loop iterates through the entire data structure once.
+
+change_town_name(): O(n)
+The complexity of .find() is expected to be linear at worst, as is indexing the data structure.
+
+towns_alphabetically(): O(n log n)
+Inserting into a map has a complexity of O(log n), the for-loops are linear.
+
+towns_distance_increasing(): O(n log n)
+Inserting into a map has a complexity of O(log n), the for-loops are linear.
+
+min_distance(): O(n)
+Std::min_element does at most N comparisons, the calculations are constant.
+
+
+max_distance(): O(n)
+Std::max_element does at most N comparisons, the calculations are constant.
+
+add_vassalship(): O(n)
+The complexity of .find() is expected to be linear at worst.
+
+get_town_vassals(): O(n)
+The complexity of .find() is expected to be linear at worst, as is looping through vassals.
+
+taxer_path(): O(n^2), theta(n)
+The for-loop can potentially loop through the entire data structure, as well as index the data structure on each round of the loop with .at().
+
+
+Own function:
+distance_from_coord(); O(1), ?(1)
+Performs a calculation on values in Coord-structs.
+

@@ -1,0 +1,44 @@
+> # Simple test of trim_road_network
+> clear_all
+Cleared all towns
+> town_count
+Number of towns: 0
+> all_roads
+No roads!
+> # Add two towns and two crossroad
+> add_town t1 One (0,0) 0
+One: tax=0, pos=(0,0), id=t1
+> add_town x1 xx (0,3) 3
+xx: tax=3, pos=(0,3), id=x1
+> add_town t2 Two (2,2) 5
+Two: tax=5, pos=(2,2), id=t2
+> add_town x2 xy (4,0) 3
+xy: tax=3, pos=(4,0), id=x2
+> # Add six roads
+> add_road t1 x1
+Added road: One <-> xx
+> add_road x1 t2
+Added road: xx <-> Two
+> add_road x2 t1
+Added road: xy <-> One
+> add_road t1 t2
+Added road: One <-> Two
+> add_road x2 t2
+Added road: xy <-> Two
+> add_road x1 x2
+Added road: xx <-> xy
+> all_roads
+1: t1 <-> t2 (2)
+2: t1 <-> x1 (3)
+3: t1 <-> x2 (4)
+4: t2 <-> x1 (2)
+5: t2 <-> x2 (2)
+6: x1 <-> x2 (5)
+> # Trim road network and print out remaining roads
+> trim_road_network
+The remaining road network has total distance of 6
+> all_roads
+1: t1 <-> t2 (2)
+2: t2 <-> x1 (2)
+3: t2 <-> x2 (2)
+> 

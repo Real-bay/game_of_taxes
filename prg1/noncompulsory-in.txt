@@ -1,0 +1,33 @@
+# Test non-compulsory operations
+clear_all
+read "towns-data.txt" silent
+read "towns-vassals-data.txt" silent
+# Test remove
+town_count
+towns_alphabetically 
+mindist 
+maxdist 
+towns_distance_increasing
+# Remove Maarianhamina, Iisalmi, and Utsjoki
+remove_town Mhn
+remove_town Ilm
+remove_town Uki
+town_count
+towns_alphabetically 
+mindist 
+maxdist 
+towns_distance_increasing
+# Remove non-existing town
+remove_town xxxx
+# Test towns_nearest
+find_towns Tampere
+towns_nearest (185,200)
+longest_vassal_path Lr
+longest_vassal_path Tpe
+longest_vassal_path Rma
+total_net_tax Lai
+total_net_tax Keu
+total_net_tax Par
+total_net_tax Hki
+total_net_tax Tpe
+quit

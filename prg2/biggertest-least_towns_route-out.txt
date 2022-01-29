@@ -1,0 +1,54 @@
+> # Bigger test of least_towns_route
+> clear_all
+Cleared all towns
+> town_count
+Number of towns: 0
+> read "towns-data.txt" silent
+** Commands from 'towns-data.txt'
+...(output discarded in silent mode)...
+** End of commands from 'towns-data.txt'
+> all_roads
+1: Hki <-> Keu (40)
+2: Hki <-> Mhn (50)
+3: Hma <-> Keu (36)
+4: Hmi <-> Ilm (31)
+5: Hmi <-> Ktn (44)
+6: Hto <-> Kli (41)
+7: Hto <-> Pmi (44)
+8: Iri <-> Pmi (31)
+9: Iri <-> Roi (44)
+10: Iri <-> Sla (31)
+11: Keu <-> Mka (28)
+12: Kli <-> Ktn (60)
+13: Kmo <-> Pmi (36)
+14: Kmo <-> Smo (31)
+15: Ktn <-> Mka (36)
+16: Lai <-> Tpe (41)
+17: Lr <-> Mka (31)
+18: Lr <-> Par (10)
+19: Mhn <-> Rma (36)
+20: Nnl <-> Rma (20)
+21: Rma <-> Slo (14)
+22: Roi <-> Uki (60)
+23: Slo <-> Tpe (14)
+> add_road Lai Ktn
+Added road: Laihia <-> Kaustinen
+> least_towns_route Nnl Kli
+1. Naantali
+2. Rauma (distance 20)
+3. Salo (distance 34)
+4. Tampere (distance 48)
+5. Laihia (distance 89)
+6. Kaustinen (distance 111)
+7. Kolari (distance 171)
+> # Add one road providing path with bigger distance but less towns
+> add_road Hki Ktn
+Added road: Helsinki <-> Kaustinen
+> least_towns_route Nnl Kli
+1. Naantali
+2. Rauma (distance 20)
+3. Maarianhamina (distance 56)
+4. Helsinki (distance 106)
+5. Kaustinen (distance 186)
+6. Kolari (distance 246)
+> 

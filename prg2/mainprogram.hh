@@ -71,7 +71,7 @@ private:
     enum class StopwatchMode { OFF, ON, NEXT };
     StopwatchMode stopwatch_mode = StopwatchMode::OFF;
 
-    enum class ResultType { NOTHING, LIST, HIERARCHY, PATH, CYCLE };
+    enum class ResultType { NOTHING, LIST, HIERARCHY, ROUTE, CYCLE };
     using CmdResult = std::pair<ResultType, std::vector<TownID>>;
     CmdResult prev_result;
     bool view_dirty = true;
@@ -102,6 +102,8 @@ private:
     CmdResult cmd_print_town(std::ostream& output, MatchIter begin, MatchIter end);
     CmdResult cmd_change_town_name(std::ostream& output, MatchIter begin, MatchIter end);
     CmdResult cmd_add_vassalship(std::ostream& output, MatchIter begin, MatchIter end);
+    CmdResult cmd_add_road(std::ostream& output, MatchIter begin, MatchIter end);
+    CmdResult cmd_remove_road(std::ostream& output, MatchIter begin, MatchIter end);
     CmdResult cmd_taxer_path(std::ostream& output, MatchIter begin, MatchIter end);
     CmdResult cmd_longest_vassal_path(std::ostream& output, MatchIter begin, MatchIter end);
     CmdResult cmd_total_net_tax(std::ostream& output, MatchIter begin, MatchIter end);
@@ -109,7 +111,17 @@ private:
     CmdResult cmd_remove_town(std::ostream& output, MatchIter begin, MatchIter end);
     CmdResult cmd_town_count(std::ostream& output, MatchIter begin, MatchIter end);
     CmdResult cmd_all_towns(std::ostream& output, MatchIter begin, MatchIter end);
+    CmdResult cmd_all_roads(std::ostream& output, MatchIter begin, MatchIter end);
     CmdResult cmd_town_vassals(std::ostream& output, MatchIter begin, MatchIter end);
+    CmdResult cmd_roads_from(std::ostream& output, MatchIter begin, MatchIter end);
+    CmdResult cmd_random_roads(std::ostream& output, MatchIter begin, MatchIter end);
+    CmdResult cmd_random_road_network(std::ostream& output, MatchIter begin, MatchIter end);
+    CmdResult cmd_any_route(std::ostream& output, MatchIter begin, MatchIter end);
+    CmdResult cmd_shortest_route(std::ostream& output, MatchIter begin, MatchIter end);
+    CmdResult cmd_least_towns_route(std::ostream& output, MatchIter begin, MatchIter end);
+    CmdResult cmd_road_cycle_route(std::ostream& output, MatchIter begin, MatchIter end);
+    CmdResult cmd_trim_road_network(std::ostream& output, MatchIter begin, MatchIter end);
+    CmdResult cmd_clear_roads(std::ostream& output, MatchIter begin, MatchIter end);
     CmdResult cmd_clear_all(std::ostream& output, MatchIter begin, MatchIter end);
     CmdResult cmd_find_towns(std::ostream& output, MatchIter begin, MatchIter end);
 
@@ -128,14 +140,25 @@ private:
     void test_longest_vassal_path();
     void test_total_net_tax();
     void test_remove_town();
+    void test_remove_road();
     void test_change_town_name();
     void test_find_towns();
     void test_random_add();
     void test_all_towns();
+    void test_all_roads();
     void test_town_vassals();
+    void test_roads_from();
     void test_get_functions(TownID id);
+    void test_random_roads();
+    void test_any_route();
+    void test_shortest_route();
+    void test_least_towns_route();
+    void test_road_cycle_route();
+    void test_trim_road_network();
 
     void add_random_towns(unsigned int size, Coord min = {1,1}, Coord max = {10000, 10000});
+    void add_random_roads(unsigned int n);
+    Distance calc_distance(Coord c1, Coord c2);
     std::string print_town(TownID id, std::ostream& output, bool nl = true);
     std::string print_town_name(TownID id, std::ostream& output, bool nl = true);
     std::string print_coord(Coord coord, std::ostream& output, bool nl = true);
@@ -158,6 +181,14 @@ private:
 
     template<std::vector<TownID>(Datastructures::*MFUNC)()>
     void NoParListTestCmd();
+
+    void create_road_network();
+    void add_random_nonintersecting_roads(unsigned int random_roads);
+
+    // Helper functions for create_road_network
+    static bool doIntersect(Coord p1, Coord q1, Coord p2, Coord q2);
+    static bool onSegment(Coord p, Coord q, Coord r);
+    static int orientation(Coord p, Coord q, Coord r);
 
     friend class MainWindow;
 };

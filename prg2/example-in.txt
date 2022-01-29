@@ -1,0 +1,18 @@
+clear_all
+clear_roads
+read "example-data.txt"
+all_roads
+roads_from Tpe
+any_route Tku Hki
+# Non-compulsory operations
+# First add a road to create more routes
+add_road x1 x2
+least_towns_route Hki Ol
+road_cycle_route Hki
+shortest_route Hki Ol
+remove_road Tpe Hki
+roads_from Tpe
+all_roads
+add_road Hki Tpe
+trim_road_network
+all_roads

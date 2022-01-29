@@ -1,0 +1,7 @@
+clear_all
+read "example-data.txt"
+all_roads
+roads_from Tpe
+any_route Tku Hki
+clear_roads
+all_roads

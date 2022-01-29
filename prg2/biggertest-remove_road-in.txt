@@ -1,0 +1,14 @@
+# Bigger test of remove_road
+clear_all
+town_count
+read "towns-data.txt" silent
+roads_from Rma
+roads_from Uki
+# Remove roads
+remove_road Rma Slo
+remove_road Uki Roi
+roads_from Rma
+roads_from Uki
+# Add one back
+add_road Slo Rma
+roads_from Rma

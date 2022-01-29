@@ -1,0 +1,6 @@
+clear_all
+read "example-data.txt"
+# First add a road to create more routes
+add_road x1 x2
+all_roads
+shortest_route Hki Ol

@@ -1,0 +1,41 @@
+> # Bigger test of compulsory operations
+> clear_all
+Cleared all towns
+> town_count
+Number of towns: 0
+> read "towns-data.txt" silent
+** Commands from 'towns-data.txt'
+...(output discarded in silent mode)...
+** End of commands from 'towns-data.txt'
+> roads_from Hto
+1. Kolari: tax=3797, pos=(40,160), id=Kli
+2. Pelkosenniemi: tax=949, pos=(70,160), id=Pmi
+> # Find some paths
+> any_route Smo Uki
+1. Sotkamo
+2. Kuusamo (distance 31)
+3. Pelkosenniemi (distance 67)
+4. Inari (distance 98)
+5. Rovaniemi (distance 142)
+6. Utsjoki (distance 202)
+> any_route Nnl Kli
+1. Naantali
+2. Rauma (distance 20)
+3. Maarianhamina (distance 56)
+4. Helsinki (distance 106)
+5. Keuruu (distance 146)
+6. Maaninka (distance 174)
+7. Kaustinen (distance 210)
+8. Kolari (distance 270)
+> any_route Hki Uki
+1. Helsinki
+2. Keuruu (distance 40)
+3. Maaninka (distance 68)
+4. Kaustinen (distance 104)
+5. Kolari (distance 164)
+6. Hailuoto (distance 205)
+7. Pelkosenniemi (distance 249)
+8. Inari (distance 280)
+9. Rovaniemi (distance 324)
+10. Utsjoki (distance 384)
+> 

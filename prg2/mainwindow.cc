@@ -43,8 +43,7 @@ using std::ostringstream;
 #include "mainwindow.hh"
 #include "ui_mainwindow.h"
 
-// Needed to be able to store PlaceID in QVariant (in QGraphicsItem)
-// (Not really necessary since PlaceID is currently long int)
+// Needed to be able to store TownID in QVariant (in QGraphicsItem)
 Q_DECLARE_METATYPE(TownID)
 // The same for AreaIDs (currently an int)
 //struct AreaIDcont { AreaID id; }; // So that we have a different type than for Place IDs
@@ -306,6 +305,52 @@ void MainWindow::update_view()
                             groupitem->addToGroup(headitem);
                             groupitem->setPos(20*x, -20*y);
                             groupitem->setZValue(zvalue);
+                        }
+                    }
+                    catch (NotImplemented const& e)
+                    {
+                        errorset.insert(std::string("NotImplemented while updating graphics: ") + e.what());
+                        std::cerr << std::endl << "NotImplemented while updating graphics: " << e.what() << std::endl;
+                    }
+                }
+
+                // Draw roads
+                if (ui->roads_checkbox->isChecked())
+                {
+                    try
+                    {
+                        auto roads = mainprg_.ds_.get_roads_from(townid);
+                        for (auto& roadid : roads)
+                        {
+                            auto [rx,ry] = mainprg_.ds_.get_town_coordinates(roadid);
+
+                            QColor linecolor = Qt::white;
+                            int zvalue = -1;
+
+                            if (mainprg_.prev_result.first == MainProgram::ResultType::ROUTE ||
+                                mainprg_.prev_result.first == MainProgram::ResultType::CYCLE)
+                            {
+                                if (res_place < prev_result.end())
+                                {
+                                    if ((res_place != prev_result.begin() && *(res_place-1) == roadid) ||
+                                        (res_place+1 != prev_result.end() && *(res_place+1) == roadid))
+                                    {
+                                        linecolor = Qt::red;
+                                        zvalue = 10;
+                                    }
+                                }
+                            }
+
+                            auto pen = QPen(linecolor);
+                            pen.setWidth(0); // "Cosmetic" pen
+                            auto lineitem = gscene_->addLine(20*x, -20*y, 20*rx, -20*ry, pen);
+                            lineitem->setZValue(zvalue);
+                //            auto pen = QPen(linecolor);
+                //            pen.setWidth(0); // "Cosmetic" pen
+                //            auto arrow = new Arrow(QPointF(20*x+4, -20*y+4), QPointF(20*rx+4, -20*ry+4));
+                //            arrow->setPen(pen);
+                //            gscene_->addItem(arrow);
+                //            arrow->setZValue(-1);
                         }
                     }
                     catch (NotImplemented const& e)
